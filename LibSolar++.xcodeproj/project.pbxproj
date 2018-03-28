@@ -6,8 +6,23 @@
 	objectVersion = 48;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		67607B542069322100578F21 /* Util.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 67607B502069322100578F21 /* Util.hpp */; };
+		67607B552069322100578F21 /* MetaException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67607B512069322100578F21 /* MetaException.cpp */; };
+		67607B562069322100578F21 /* Util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67607B522069322100578F21 /* Util.cpp */; };
+		67607B572069322100578F21 /* MetaException.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 67607B532069322100578F21 /* MetaException.hpp */; };
+		67D28BE62069408E006B5924 /* iniplus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67D28BE42069408E006B5924 /* iniplus.cpp */; };
+		67D28BE72069408E006B5924 /* iniplus.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 67D28BE52069408E006B5924 /* iniplus.hpp */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		67607B492069310C00578F21 /* libLibSolar++.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libLibSolar++.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		67607B502069322100578F21 /* Util.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Util.hpp; sourceTree = "<group>"; };
+		67607B512069322100578F21 /* MetaException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MetaException.cpp; sourceTree = "<group>"; };
+		67607B522069322100578F21 /* Util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Util.cpp; sourceTree = "<group>"; };
+		67607B532069322100578F21 /* MetaException.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MetaException.hpp; sourceTree = "<group>"; };
+		67D28BE42069408E006B5924 /* iniplus.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = iniplus.cpp; sourceTree = "<group>"; };
+		67D28BE52069408E006B5924 /* iniplus.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = iniplus.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -24,6 +39,12 @@
 		67607B402069310C00578F21 = {
 			isa = PBXGroup;
 			children = (
+				67D28BE42069408E006B5924 /* iniplus.cpp */,
+				67D28BE52069408E006B5924 /* iniplus.hpp */,
+				67607B512069322100578F21 /* MetaException.cpp */,
+				67607B532069322100578F21 /* MetaException.hpp */,
+				67607B522069322100578F21 /* Util.cpp */,
+				67607B502069322100578F21 /* Util.hpp */,
 				67607B4A2069310C00578F21 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,6 +64,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67607B542069322100578F21 /* Util.hpp in Headers */,
+				67607B572069322100578F21 /* MetaException.hpp in Headers */,
+				67D28BE72069408E006B5924 /* iniplus.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,6 +127,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67607B552069322100578F21 /* MetaException.cpp in Sources */,
+				67607B562069322100578F21 /* Util.cpp in Sources */,
+				67D28BE62069408E006B5924 /* iniplus.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,6 +242,8 @@
 		67607B4E2069310C00578F21 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_STYLE = Automatic;
 				EXECUTABLE_PREFIX = lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -224,6 +253,8 @@
 		67607B4F2069310C00578F21 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_STYLE = Automatic;
 				EXECUTABLE_PREFIX = lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
