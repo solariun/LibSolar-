@@ -63,7 +63,9 @@ iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserITem)
     {
         chChar = isIn->get();
         
-        cerr << chChar << " tp: " << nType << " : String: [" << strData << "]" <<  " EOF: " << isIn->eof () << endl;
+        cerr << chChar;
+        	
+        //cerr << chChar << " tp: " << nType << " : String: [" << strData << "]" <<  " EOF: " << isIn->eof () << endl;
     }
     
     isIn->close();
