@@ -21,6 +21,8 @@
 		67607B512069322100578F21 /* MetaException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MetaException.cpp; sourceTree = "<group>"; };
 		67607B522069322100578F21 /* Util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Util.cpp; sourceTree = "<group>"; };
 		67607B532069322100578F21 /* MetaException.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MetaException.hpp; sourceTree = "<group>"; };
+		6795E601206C20030043F7EE /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		6795E602206C20030043F7EE /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		67D28BE42069408E006B5924 /* iniplus.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = iniplus.cpp; sourceTree = "<group>"; };
 		67D28BE52069408E006B5924 /* iniplus.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = iniplus.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -39,6 +41,8 @@
 		67607B402069310C00578F21 = {
 			isa = PBXGroup;
 			children = (
+				6795E601206C20030043F7EE /* LICENSE */,
+				6795E602206C20030043F7EE /* README.md */,
 				67D28BE42069408E006B5924 /* iniplus.cpp */,
 				67D28BE52069408E006B5924 /* iniplus.hpp */,
 				67607B512069322100578F21 /* MetaException.cpp */,

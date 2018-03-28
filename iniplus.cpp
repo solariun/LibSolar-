@@ -45,12 +45,12 @@ void iniplus::parseINI ()
     
     while (getNextLexicalItem(lexItem) != NULL)
     {
-        cerr << "Received Lex Item: " << endl;
+        cerr << "Received Lex Item: (" << lexItem.inieType << ") " << lexItem.strValue << endl;
     }
 }
 
 
-iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserITem)
+iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserItem)
 {
     string  strData = "";
     
@@ -59,16 +59,56 @@ iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserITem)
     
     if (isIn->eof()) return NULL;
     
+    bool    boolString = false;
+    
     while (isIn->good())
     {
         chChar = isIn->get();
         
-        cerr << chChar;
-        	
         //cerr << chChar << " tp: " << nType << " : String: [" << strData << "]" <<  " EOF: " << isIn->eof () << endl;
+        
+        if (nType == none_tag)
+        {
+            if (chChar == '[')
+            {
+                nType = open_session_tag;
+                boolString = true;
+            }
+            else if (chChar == '{')
+            {
+                strData = "{";
+                
+                iniParserItem.assign (open_struct_tag, strData);
+                
+                return &iniParserItem;
+            }
+            else if (chChar == '}')
+            {
+                strData = "}";
+                
+                iniParserItem.assign (close_struct_tag, strData);
+                
+                return &iniParserItem;
+            }
+            //else if (chChar)
+        }
+        else if (nType == open_session_tag && chChar == ']')
+        {
+            nType = none_tag;
+            
+            iniParserItem.assign (session_tag, strData);
+            
+            return &iniParserItem;
+        }
+        else if (boolString == true)
+        {
+            strData += chChar;
+        }
     }
     
     isIn->close();
     
     return NULL;
 }
+
+

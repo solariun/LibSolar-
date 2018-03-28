@@ -36,6 +36,7 @@ enum iniElements_t
     string_tag,
     limit_tag,
     array_tag,
+    session_tag,
     open_session_tag,
     close_session_tag
 };
@@ -62,7 +63,6 @@ public:
     
     iniElements_t   inieType = none_tag;
     string           strValue = "";
-    string           strAttribute = "";
 };
 
 
@@ -73,7 +73,7 @@ protected:
     
     ifstream*   isIn = NULL;
     string      strFileName;
-    int32_t     nType=0;
+    int32_t     nType= none_tag;
     
 private:
     
