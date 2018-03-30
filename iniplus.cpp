@@ -48,11 +48,13 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
     uint nType = none_tag;
     
     if (strPath.length() > 0)
-        //TRACE << "Entering level (" << nDepth << ") [" << strPath << "]" << endl;
+    {
+        TRACE << "Entering level (" << nDepth << ") [" << strPath << "]" << endl;
+    }
     
     while (getNextLexicalItem(lexItem) != NULL)
     {
-        ////TRACE << "strPath: [" << strPath.length() << "] Received Lex Item: (" << lexItem.nType << ") [" << lexItem.strValue << "]" << endl;
+        //TRACE << "strPath: [" << strPath.length() << "] Received Lex Item: (" << lexItem.nType << ") [" << lexItem.strValue << "]" << endl;
         
         if (lexItem.nType == session_tag)
         {
@@ -85,7 +87,7 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
                     
                     mapIniData.insert (pair<string, string> (strPath + "." + strAttribute, lexItem.strValue));
                     
-                    //TRACE << "Adding: [" << strPath << "." << strAttribute << "] = [" << lexItem.strValue << "]" << endl;
+                    TRACE << "Adding: [" << strPath << "." << strAttribute << "] = [" << lexItem.strValue << "]" << endl;
                     
                     nType = none_tag;
                 }
@@ -138,13 +140,13 @@ iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserItem)
                 isIn->putback(chChar);
             }
             
-            //TRACE << chChar;
+            TRACE << chChar;
         }
         else if (nType != string_quote_tag && chChar == '#')
         {
             boolDiscartComment = true;
             
-            //TRACE << "Starting Discarting..." << endl;
+            TRACE << "Starting Discarting..." << endl;
         }
         else if (nType == none_tag)
         {
