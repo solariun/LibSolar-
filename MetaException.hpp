@@ -43,7 +43,26 @@
 using namespace std;
 
 
+#ifndef _DEBUG
+static bool _nDebug = false;
+#else
+static bool _nDebug = true;
+#endif
+
+
+
 #define VERIFY(cond,id,text) MetaException::verify (cond, "typeid (this).name()", __FILE__, __LINE__, __PRETTY_FUNCTION__, #cond, id, text)
+
+
+#define NOTRACE
+
+#define TRACE if (getDebugState() == true) cerr
+
+
+void setDebug(bool nState);
+
+bool getDebugState();
+
 
 class MetaException
 {
@@ -51,7 +70,7 @@ private:
     uint32_t nExID;
     string   strExText;
     string   strType;
-    
+ 
 public:
     MetaException(const string& strType, const uint32_t nExID,  const string&) noexcept;
     MetaException(const string& strType, const uint32_t nExID,  const char*) noexcept;

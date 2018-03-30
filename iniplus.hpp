@@ -15,8 +15,12 @@
 #include <fstream>
 #include <string>
 #include <stack>
+#include <regex>
+#include <map>
 
 #include "MetaException.hpp"
+#include "Util.hpp"
+
 
 using namespace std;
 
@@ -24,18 +28,15 @@ using namespace std;
 
 enum iniElements_t
 {
-    init_tag,
     none_tag,
     struct_tag,
     open_struct_tag,
     close_struct_tag,
     attributive_tag,
-    set_tag,
-    value_tag,
+    string_line_tag,
     string_quote_tag,
+    value_tag,
     string_tag,
-    limit_tag,
-    array_tag,
     session_tag,
     open_session_tag,
     close_session_tag
@@ -49,19 +50,19 @@ enum iniElements_t
 class iniParserItemRet
 {
 public:
-    iniParserItemRet(iniElements_t  inieType, string& strValue) : inieType(inieType), strValue(strValue){cout << "init class: " << typeid(this).name() << endl; };
+    iniParserItemRet(iniElements_t  inieType, string& strValue) : nType(inieType), strValue(strValue){cout << "init class: " << typeid(this).name() << endl; };
     
     iniParserItemRet(){};
     
     iniParserItemRet* assign (iniElements_t  inieType, string& strValue)
     {
-        this->inieType = inieType;
+        this->nType = inieType;
         this->strValue = strValue;
         
         return this;
     }
     
-    iniElements_t   inieType = none_tag;
+    iniElements_t   nType = none_tag;
     string           strValue = "";
 };
 
@@ -71,13 +72,16 @@ class iniplus
 {
 protected:
     
+    map<string, string> mapIniData;
+    
     ifstream*   isIn = NULL;
     string      strFileName;
     int32_t     nType= none_tag;
+
     
 private:
     
-    void parseINI ();
+    void parseINI (string strPath="", uint32_t nDepth=0);
     
     iniParserItemRet* getNextLexicalItem (iniParserItemRet& iniParserITem);
     

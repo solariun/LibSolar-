@@ -33,6 +33,11 @@
 #include "MetaException.hpp"
 #include <sstream>
 
+void setDebug(bool nState) {_nDebug = nState;}
+
+bool getDebugState() {return _nDebug; };
+
+
 inline std::string className(const std::string& prettyFunction)
 {
     size_t colons = prettyFunction.find("::");
@@ -116,3 +121,4 @@ const char* MetaException::getExMessage ()
 {
     return strExText.c_str();
 }
+
