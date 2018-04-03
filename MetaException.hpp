@@ -43,13 +43,6 @@
 using namespace std;
 
 
-#ifndef _DEBUG
-static bool _nDebug = false;
-#else
-static bool _nDebug = true;
-#endif
-
-
 
 #define VERIFY(cond,id,text) MetaException::verify (cond, "typeid (this).name()", __FILE__, __LINE__, __PRETTY_FUNCTION__, #cond, id, text)
 

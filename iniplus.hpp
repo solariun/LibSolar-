@@ -88,6 +88,29 @@ private:
 public:
     
     iniplus (const char* pszINIFileName);
+    
+    string getStringFromRef (string& strRet, const char* pszINIPath);
+    string getString (const char* pszINIPath);
+    
+    int    getInteger (const char* pszINIPath);
+
+    int64_t getInt64bits (const char* pszINIPath);
+    int32_t getInt32bits (const char* pszINIPath);
+    int16_t getInt16bits (const char* pszINIPath);
+    int8_t getInte8bits (const char* pszINIPath);
+
+    uint64_t getUInt64bits (const char* pszINIPath);
+    uint32_t getUInt32bits (const char* pszINIPath);
+    uint16_t getUInt16bits (const char* pszINIPath);
+    uint8_t getUInte8bits (const char* pszINIPath);
+
+    long  getLong (const char* pszINIPath);
+    long long getLongLong (const char* pszINIPath);
+    
+    float getfloat (const char* pszINIPath);
+    double getDouble (const char* pszINIPath);
+    
+    
 };
 
 
