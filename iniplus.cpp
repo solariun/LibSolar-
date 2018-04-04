@@ -11,6 +11,7 @@
 #include <iostream>
 #include <new>
 #include <sstream>
+#include <stdlib.h>
 
 
 iniplus::iniplus (const char* pszINIFileName) : strFileName(pszINIFileName)
@@ -18,12 +19,12 @@ iniplus::iniplus (const char* pszINIFileName) : strFileName(pszINIFileName)
     
     ifstream* ifsFile;
     
-    VERIFY(Util::getFileSize(pszINIFileName) > 0, 100, "Errro, file is zero or does not exist.");
+    VERIFY(Util::getFileSize(pszINIFileName) > 0, EXCEPT_INI_FILE_DOSENT_EXIST_OR_ZERO, "Errro, file is zero or does not exist.");
     
     ifsFile = new ifstream (pszINIFileName);
     //int errn = errno;
     
-    VERIFY ((ifsFile->rdstate() & std::ifstream::failbit) == 0, 101, "File could not be read becasuse ");
+    VERIFY ((ifsFile->rdstate() & std::ifstream::failbit) == 0, EXCEPT_INI_FILE_NOT_READ, "File could not be read.");
     
     this->isIn = ifsFile;
     
@@ -33,7 +34,17 @@ iniplus::iniplus (const char* pszINIFileName) : strFileName(pszINIFileName)
     
     //Starting creating the structure of the data
     
-    parseINI();
+    try {
+        parseINI();
+    }
+    catch (...)
+    {
+        this->isIn->close();
+        throw;
+    }
+    
+    
+    this->isIn->close();
 }
 
 
@@ -79,11 +90,11 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
             }
             if (nType == value_tag)
             {
-                VERIFY(strAttribute.length() > 0, 201, "Error, no Attribute value available.");
+                VERIFY(strAttribute.length() > 0, EXCEPT_INI_INVALID_ATTRIBUTE_VALUE, "Error, no Attribute value available.");
                 
                 if (lexItem.nType == attributive_tag)
                 {
-                    VERIFY(getNextLexicalItem(lexItem) != NULL && lexItem.nType == string_tag, 202, "Syntatic Error, no correct value given");
+                    VERIFY(getNextLexicalItem(lexItem) != NULL && lexItem.nType == string_tag, EXCEPT_INI_SYNT_ERROR_INVALID_VALUE, "Syntatic Error, no correct value given");
                     
                     mapIniData.insert (pair<string, string> (strPath + "." + strAttribute, lexItem.strValue));
                     
@@ -102,7 +113,7 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
         }
         else
         {
-            VERIFY (strPath.length() == 0 && lexItem.nType == session_tag, 200, "Error, Trying to add values with no session open, please revise the ini structure.");
+            VERIFY (strPath.length() == 0 && lexItem.nType == session_tag, EXCEPT_INI_FAIL_ADD_VALUE_NO_SESSION, "Error, Trying to add values with no session open, please revise the ini structure.");
         }
     }
 }
@@ -266,10 +277,80 @@ iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserItem)
     }
     
     nType = none_tag;
-    
-    isIn->close();
-    
+        
     return NULL;
+}
+
+
+
+
+string iniplus::getStringFromRef (string& strRet, const char* pszINIPath)
+{
+    return (strRet = getString(pszINIPath));
+}
+
+string iniplus::getString (const char* pszINIPath)
+{
+    map<string,string>::iterator mapPos;
+    
+    mapPos = mapIniData.find(pszINIPath);
+    
+    VERIFY (mapPos != mapIniData.end(), EXCEPT_INI_NO_INIPATH_FOUND, "Error, element not found.");
+    
+    return mapPos->second;
+}
+
+
+int iniplus::getInteger (const char* pszINIPath)
+{
+    return std::stoi (((const string) getString (pszINIPath)), nullptr, 0);
+}
+
+
+/*
+ *  The Long and Long Long conversion hereby implemented
+ *  are capable of selecting from decimal and hexadecimal automatically
+ *  and extra is supplied for binary only conversion. I know one can argue
+ *  the auto select could be implemented for binary too, but it could pose
+ *  an extra layer of processing, losing precious time that could be, otherwise,
+ *  used for processing, thus, I decided against it.
+ */
+
+long  iniplus::getLong (const char* pszINIPath)
+{
+    return std::stol ((const string)getString (pszINIPath), nullptr, 0);
+}
+
+long long iniplus::getLongLong (const char* pszINIPath)
+{
+    return std::stoll ((const string)getString (pszINIPath), nullptr, 0);
+}
+
+long long iniplus::getULongLongFromBinary (const char* pszINIPath)
+{
+    return std::stoll ((const string)getString (pszINIPath), nullptr, 2);
+}
+
+
+long  iniplus::getULong (const char* pszINIPath)
+{
+    return std::stoul ((const string)getString (pszINIPath));
+}
+
+long long iniplus::getULongLong (const char* pszINIPath)
+{
+    return std::stoull ((const string)getString (pszINIPath));
+}
+
+
+float iniplus::getfloat (const char* pszINIPath)
+{
+     return std::stof ((const string)getString (pszINIPath));
+}
+ 
+double iniplus::getDouble (const char* pszINIPath)
+{
+     return std::stof ((const string)getString (pszINIPath));
 }
 
 

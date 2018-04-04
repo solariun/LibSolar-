@@ -46,14 +46,25 @@ bool getDebugState() {return _nDebug; };
 
 inline std::string className(const std::string& prettyFunction)
 {
-    size_t colons = prettyFunction.find("::");
+    
+    size_t colons = prettyFunction.find("(");
+    
     if (colons == std::string::npos)
         return "__BODY__";
     size_t begin = prettyFunction.substr(0,colons).rfind(" ") + 1;
     size_t end = colons - begin;
     
-    return prettyFunction.substr(begin,end);
+    string strClassFunc = prettyFunction.substr(begin,end);
+    
+    colons = strClassFunc.find("::");
+    if (colons == std::string::npos)
+        return "__BODY__";
+    begin = strClassFunc.substr(0,colons).rfind(" ") + 1;
+    end = colons - begin;
+    
+    return strClassFunc.substr(begin,end);
 }
+
 
 #define __CLASS_NAME__ className(__PRETTY_FUNCTION__)
 
@@ -100,11 +111,12 @@ void MetaException::verify(bool bCriteria, const char* pszType, const char* pszF
     if (!bCriteria)
     {
         stringstream strsValue;
-        string       strClassName = className(pszFuncion);
+        string       strClassName = pszType;
+        
         
         if (strClassName.size() == 0) strClassName = "__BODY__";
         
-        strsValue << " at " << pszFile << "(" << nFileLine << "), Func: [" << pszFuncion << "], Code: [" << pszCode << "], ID:(" << nExID << "):" << sStringValue;
+        strsValue << " " << strClassName << " at " << pszFile << "(" << nFileLine << "), Func: [" << pszFuncion << "], Code: [" << pszCode << "], ID:(" << nExID << "):" << sStringValue;
         
         if (errno != 0)
         {
@@ -128,3 +140,7 @@ const char* MetaException::getExMessage ()
     return strExText.c_str();
 }
 
+const char* MetaException::getExType ()
+{
+    return strType.c_str();
+}

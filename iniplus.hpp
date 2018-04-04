@@ -42,6 +42,21 @@ enum iniElements_t
     close_session_tag
 };
 
+
+
+/*
+ * ERROR COLDES
+ */
+
+#define EXCEPT_INI_FILE_NOT_READ                200
+#define EXCEPT_INI_FILE_DOSENT_EXIST_OR_ZERO    201
+
+#define EXCEPT_INI_FAIL_ADD_VALUE_NO_SESSION    202
+#define EXCEPT_INI_SYNT_ERROR_INVALID_VALUE     203
+#define EXCEPT_INI_INVALID_ATTRIBUTE_VALUE      204
+
+#define EXCEPT_INI_NO_INIPATH_FOUND             210
+
 /*
  * Type used for returning the Lexical ITem
  */
@@ -94,23 +109,16 @@ public:
     
     int    getInteger (const char* pszINIPath);
 
-    int64_t getInt64bits (const char* pszINIPath);
-    int32_t getInt32bits (const char* pszINIPath);
-    int16_t getInt16bits (const char* pszINIPath);
-    int8_t getInte8bits (const char* pszINIPath);
+    long  getULong (const char* pszINIPath);
+    long long getULongLong (const char* pszINIPath);
 
-    uint64_t getUInt64bits (const char* pszINIPath);
-    uint32_t getUInt32bits (const char* pszINIPath);
-    uint16_t getUInt16bits (const char* pszINIPath);
-    uint8_t getUInte8bits (const char* pszINIPath);
+    long long getULongLongFromBinary (const char* pszINIPath);
 
     long  getLong (const char* pszINIPath);
     long long getLongLong (const char* pszINIPath);
     
     float getfloat (const char* pszINIPath);
     double getDouble (const char* pszINIPath);
-    
-    
 };
 
 
