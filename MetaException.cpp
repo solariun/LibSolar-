@@ -68,7 +68,7 @@ inline std::string className(const std::string& prettyFunction)
 
 #define __CLASS_NAME__ className(__PRETTY_FUNCTION__)
 
-MetaException::MetaException(const string& strType, const uint32_t nExID,  const string& strValue) noexcept: strExText(strValue), nExID(nExID), strType(strType)
+MetaException::MetaException(const string& strType, const uint32_t nExID,  const string strValue) noexcept: strExText(strValue), nExID(nExID), strType(strType)
 {
     return;
 }

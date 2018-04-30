@@ -106,8 +106,10 @@ public:
     
     string getStringFromRef (string& strRet, const char* pszINIPath);
     string getString (const char* pszINIPath);
+  
+    bool Exists (const char* pszINIPath);
     
-    int    getInteger (const char* pszINIPath);
+    int  getInteger (const char* pszINIPath);
 
     long  getULong (const char* pszINIPath);
     long long getULongLong (const char* pszINIPath);

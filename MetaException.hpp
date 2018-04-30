@@ -44,12 +44,12 @@ using namespace std;
 
 
 
-#define VERIFY(cond,id,text) MetaException::verify (cond, typeid (this).name(), __FILE__, __LINE__, __PRETTY_FUNCTION__, #cond, id, text)
+#define VERIFY(cond,id,text) MetaException::verify (cond, "typeid (this).name()", __FILE__, __LINE__, __PRETTY_FUNCTION__, #cond, id, text)
 
 
 #define NOTRACE
 
-#define TRACE if (getDebugState() == true) cerr
+#define TRACE if (getDebugState() == true) std::cerr
 
 
 void setDebug(bool nState);
@@ -68,7 +68,7 @@ private:
     static string strTypeValue;
     
 public:
-    MetaException(const string& strType, const uint32_t nExID,  const string&) noexcept;
+    MetaException(const string& strType, const uint32_t nExID,  const string) noexcept;
     MetaException(const string& strType, const uint32_t nExID,  const char*) noexcept;
     
     MetaException(const MetaException&) noexcept;

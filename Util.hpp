@@ -40,7 +40,9 @@
 #include <fstream>
 #include <string>
 #include <sys/stat.h>
+#include <vector>
 
+#include "MetaException.hpp"
 
 namespace Util
 {
@@ -61,7 +63,13 @@ namespace Util
 
     std::string trim_copy(std::string s);
 
+    std::string& strToUpper (std::string& strData);
+    
+    uint getCSVlikeParser (std::string& strData, const char* pszToken, uint nTokenSize, std::vector<std::string>& listContainer);
+
 }
+
+
 
 #endif /* Util_hpp */
 

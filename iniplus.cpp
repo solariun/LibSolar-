@@ -283,6 +283,19 @@ iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserItem)
 
 
 
+/*
+ * Check if exists any inipath;
+ */
+bool iniplus::Exists (const char* pszINIPath)
+{
+    return mapIniData.find(pszINIPath) != mapIniData.end() ? true : false;
+}
+
+
+
+/*
+ * Conversion types lookup functions functions 
+ */
 
 string iniplus::getStringFromRef (string& strRet, const char* pszINIPath)
 {

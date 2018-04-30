@@ -40,6 +40,8 @@
 #include <algorithm>
 #include <cctype>
 #include <locale>
+#include <vector>
+
 
 // trim from start (in place)
 void Util::ltrim(std::string &s)
@@ -100,6 +102,7 @@ bool Util::isBetween (char chChar, const char* pszCharList, int32_t nMaxCharList
     return nMaxCharList < 0 ? false : true;
 }
 
+
 long Util::getFileSize(std::string filename)
 {
     struct stat stat_buf;
@@ -107,4 +110,109 @@ long Util::getFileSize(std::string filename)
     int rc = stat(filename.c_str(), &stat_buf);
     
     return rc == 0 ? stat_buf.st_size : -1;
+}
+
+
+std::string& Util::strToUpper (std::string& strData)
+{
+    for (auto& c : strData) toupper(c);
+    
+    return strData;
+}
+
+/*
+ * CSV style parser, it will parser
+ * it will parser de data taking care of strings between ' " '
+ *
+ * it is based on vector to get things easier to parser for
+ * developer, use resize to approvisionate space
+ * it will only clear to no change the memory already allocated.
+ */
+
+uint Util::getCSVlikeParser (std::string& strData, const char* pszTokens, uint nTokenSize, std::vector<std::string>& listContainer)
+{
+    
+    listContainer.clear();
+    
+    std::string strWork = "";
+    
+    int typeText = 0;
+    bool boolOverload = false;
+    bool boolAddChar = false;
+ 
+    boolAddChar = false;
+    
+    uint nCount=0;
+    
+    for (auto chChar : strData)
+    {
+        if (typeText == 0 && isBetween(chChar, pszTokens, nTokenSize) == false)
+        {
+            if (chChar == '\"')
+            {
+                typeText = 2;
+                continue;
+            }
+            else
+            {
+                typeText = 1;
+            }
+        }
+        
+        if (typeText == 1)
+        {
+            if (isBetween(chChar, pszTokens, nTokenSize))
+            {
+                listContainer.push_back (strWork);
+                TRACE << "Adding line: [" << strWork << "]" << std::endl;
+                
+                nCount++;
+                
+                strWork = "";
+                typeText = 0;
+                
+                boolAddChar = false;
+            }
+            else if (boolAddChar == false)
+            {
+                boolAddChar = true;
+            }
+        }
+        else if (typeText == 2)
+        {
+            if (boolOverload == true)
+            {
+                strWork += chChar;
+                
+                boolOverload = true;
+            }
+            else if (chChar == '\\')
+            {
+                boolOverload = true;
+            }
+            else if (chChar == '"')
+            {
+                typeText = 1;
+                continue;
+            }
+            else
+            {
+                boolAddChar = true;
+            }
+        }
+        
+        if (boolAddChar == true)
+        {
+            strWork += chChar;
+        }
+    }
+    
+    if (strWork.length() > 0)
+    {
+        listContainer.push_back (strWork);
+        TRACE << "LAST: Adding line: [" << strWork << "]" << std::endl;
+        nCount++;
+    }
+    
+    return nCount;
 }
