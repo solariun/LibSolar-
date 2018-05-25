@@ -70,6 +70,9 @@ private:
 public:
     MetaException(const string& strType, const uint32_t nExID,  const string) noexcept;
     MetaException(const string& strType, const uint32_t nExID,  const char*) noexcept;
+
+    MetaException(const uint32_t nExID,  const string) noexcept;
+    MetaException(const uint32_t nExID,  const char*) noexcept;
     
     MetaException(const MetaException&) noexcept;
     MetaException& operator=(const MetaException&) noexcept;

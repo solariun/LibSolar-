@@ -233,6 +233,7 @@ iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserItem)
             if(chChar == '\\')
             {
                 boolOverload = true;
+                continue;
             }
             else if (chChar == '"')
             {

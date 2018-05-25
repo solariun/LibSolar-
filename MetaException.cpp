@@ -78,6 +78,16 @@ MetaException::MetaException(const string& strType, const uint32_t nExID,  const
     return;
 }
 
+MetaException::MetaException(const uint32_t nExID,  const string strValue) noexcept: strExText(strValue), nExID(nExID)
+{
+    return;
+}
+
+MetaException::MetaException(const uint32_t nExID,  const char* pszValue)  noexcept: strExText(pszValue), nExID(nExID)
+{
+    return;
+}
+
 
 MetaException::MetaException(const MetaException& exMetaException) noexcept
 {
@@ -101,7 +111,6 @@ MetaException::~MetaException() noexcept
 
 const char* MetaException::what() const noexcept
 {
-
     return strType.c_str();
 }
 
