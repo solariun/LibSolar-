@@ -1,5 +1,5 @@
 //
-//  Util.hpp
+//  Exception.cpp
 //  xml2xpath
 //
 //  Created by GUSTAVO CAMPOS on 26/02/18.
@@ -30,53 +30,65 @@
  */
 
 
-#ifndef Util_hpp
-#define Util_hpp
+ 
 
-#include <stdio.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <sys/stat.h>
-#include <vector>
 
-#include "MetaException.hpp"
+#include "Exception.hpp"
+#include <sstream>
 
-#define CLASSLOG cerr << ClassErrorHeader() << ":"
+#ifndef _DEBUG
+static bool _nDebug = false;
+#else
+static bool _nDebug = true;
+#endif
 
-#define ClassErrorHeader() Util::getStandardErrorHeader (typeid(*this).name(), __FILE__, __LINE__, __FUNCTION__)
-#define FuncErrorHeader() Util::getStandardErrorHeader ("Function", __LINE__, __FUNCTION__)
 
-namespace Util
+void setDebug(bool nState) {_nDebug = nState;}
+
+bool getDebugState() {return _nDebug; };
+
+
+Exception::Exception (const char* pszType, const char* pszFile, const size_t nFileLine, const char* pszFuncion, const char* pszCode, const size_t nExID, const char* pszStringValue) : pszType(pszType), nExID(nExID)
 {
-    bool isBetween  (char chChar, const char* pszCharList, int32_t nMaxCharList);
-
-    long getFileSize(std::string filename);
-
-    void ltrim(std::string &s);
-
-    void rtrim(std::string &s);
-
-    void trim(std::string &s);
-
-    std::string ltrim_copy(std::string s);
-
-    std::string rtrim_copy(std::string s);
-
-    std::string trim_copy(std::string s);
-
-    std::string& strToUpper (std::string& strData);
+    stringstream strData;
     
-    uint getCSVlikeParser (std::string& strData, const char* pszToken, uint nTokenSize, std::vector<std::string>& listContainer);
-
-    const string getLogLikeTimeStamp ();
-    
-    const string getStandardErrorHeader (const char* pszClass, int nLine, const char* pszFunction);
+    strData << pszFile << "(" << nFileLine << ")" << pszType << "::" << pszFuncion << " (...):" << pszCode << "[" << nExID << "]: " << pszStringValue;    
+    this->strExText = strData.str();
 }
 
 
+Exception::Exception(const Exception& exException) noexcept
+{
+    (*this) = exException;
+    return;
+}
 
-#endif /* Util_hpp */
+Exception& Exception::operator=(const Exception& exException) noexcept
+{
+    this->nExID = exException.nExID;
+    this->strExText.assign(exException.strExText);
+    
+    return (*this);
+}
+
+Exception::~Exception() noexcept
+{
+    return;
+}
+
+const uint32_t Exception::getExceptionID ()
+{
+    return (const uint32_t) nExID;
+}
+
+const char* Exception::getExMessage ()
+{
+    return strExText.c_str();
+}
+
+
+const char* Exception::what() const noexcept
+{
+    return this->pszType;
+}
 

@@ -41,6 +41,7 @@
 #include <cctype>
 #include <locale>
 #include <vector>
+#include <ctime>
 
 
 // trim from start (in place)
@@ -215,4 +216,32 @@ uint Util::getCSVlikeParser (std::string& strData, const char* pszTokens, uint n
     }
     
     return nCount;
+}
+
+
+const string Util::getLogLikeTimeStamp ()
+{
+    time_t timeNow;
+    struct tm* tmInfo;
+    char szBuffer [20];
+    
+    time (&timeNow);
+    tmInfo = localtime(&timeNow);
+    
+    strftime(szBuffer, sizeof (szBuffer), "%F.%T", tmInfo);
+    
+    return string(szBuffer);
+}
+
+
+
+const string Util::getStandardErrorHeader (const char* pszClass, int nLine, const char* pszFunction)
+{
+    string strValue;
+    
+    strValue.resize(200);
+    
+    strValue = strValue + getLogLikeTimeStamp() + "-" + pszClass + "." + pszFunction + "(" + std::to_string(nLine) + ")";
+    
+    return strValue;
 }
