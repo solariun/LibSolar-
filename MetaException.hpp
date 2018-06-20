@@ -49,12 +49,6 @@ using namespace std;
 
 #define NOTRACE
 
-#define TRACE if (getDebugState() == true) std::cerr
-
-
-void setDebug(bool nState);
-
-bool getDebugState();
 
 
 

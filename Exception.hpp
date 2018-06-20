@@ -76,21 +76,18 @@
 
 using namespace std;
 
+#define CLASSLOG cerr << ClassErrorHeader() << ":"
 
-#define __CLASS_NAME__ Exception
+#define ClassErrorHeader() Exception::getStandardErrorHeader (typeid(*this).name(), __LINE__, __FUNCTION__)
+#define FuncErrorHeader() Exception::getStandardErrorHeader ("Function", __LINE__, __FUNCTION__)
 
+#define _Verify(cond, text, id, except) { if(!cond) throw except (FuncErrorHeader() + "-" + text, id); }
+#define Verify(cond, text, id, except) { if(!cond) throw except (ClassErrorHeader() + "-" + text, id); }
 
 #define STRINGFY_(x) #x
 #define STRINGFY__(x) STRINGFY_(x)
 #define STRINGFY(x)STRINGFY__(x)
 
-#define EXCEPTIONCALL(strCode, nExID, strErrorDescr) __FILE__, __LINE__, __FUNCTION__,  strCode, nExID, strErrorDescr
-
-#define Verify_(cond,id,text, class) if (!(cond)) { throw class ## Exception(EXCEPTIONCALL(#cond, id, text)); }
-
-#define Verify__(cond,id,text, class) Verify_(cond, id, text, class)
-
-#define Verify(cond,id,text) Verify__(cond, id, text, __CLASS_NAME__)
 
 #define NOTRACE
 
@@ -102,18 +99,25 @@ void setDebug(bool nState);
 bool getDebugState();
 
 
+
+
 class Exception
 {
 private:
-    const char* pszType;
     size_t nExID;
     string   strExText;
     
     static string strTypeValue;
 
-public:
+protected:
     
-    explicit Exception (const char* pszType, const char* pszFile, const size_t nFileLine, const char* pszFuncion, const char* pszCode, const size_t nExID, const char* pszStringValue);
+    string strType;
+
+public:
+
+    static const string getStandardErrorHeader (const char* pszClass, int nLine, const char* pszFunction);
+    
+    explicit Exception (string strMessage, uint nErrorID);
     
     Exception(const Exception&) noexcept;
     Exception& operator=(const Exception&) noexcept;
@@ -121,7 +125,6 @@ public:
     ~Exception() noexcept;
     
     virtual const char* what() const noexcept;
-    
     
     const uint32_t getExceptionID ();
     const char* getExMessage ();

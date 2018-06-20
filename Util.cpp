@@ -44,6 +44,19 @@
 #include <ctime>
 
 
+#ifndef _DEBUG
+static bool _nDebug = false;
+#else
+static bool _nDebug = true;
+#endif
+
+
+void setDebug(bool nState) {_nDebug = nState;}
+
+bool getDebugState() {return _nDebug; };
+
+
+
 // trim from start (in place)
 void Util::ltrim(std::string &s)
 {
@@ -241,7 +254,46 @@ const string Util::getStandardErrorHeader (const char* pszClass, int nLine, cons
     
     strValue.resize(200);
     
-    strValue = strValue + getLogLikeTimeStamp() + "-" + pszClass + "." + pszFunction + "(" + std::to_string(nLine) + ")";
+    strValue = strValue + pszClass + "." + pszFunction + "(" + std::to_string(nLine) + ")";
     
     return strValue;
 }
+
+void  Util::PrintDataToDebug (uint8_t* szSectionData, long int nDataLen)
+{
+    long int nCount;
+    long int nCount1;
+    long int  nLen;
+    char szPData [20];
+    
+    fprintf (stderr, "%s : Total Visualizing: [%-8lu]\n", "Debug ", nDataLen);
+    
+    for (nCount=0; nCount < nDataLen; nCount = nCount + 16)
+    {
+        nLen = nCount + 16 > nDataLen ? nDataLen - nCount : 16;
+        
+        fprintf (stderr, "%s : Addr: [%-.10lu] ", "Debug ", nCount);
+        for (nCount1=0; nCount1 < 16; nCount1++)
+        {
+             if (nCount1 % 8 == 0) printf ("  ");
+            
+            if (nCount1 + nCount < nDataLen)
+            {
+               
+                
+                fprintf (stderr, "%-.2X ", (uint8_t) szSectionData [nCount + nCount1]);
+                szPData [nCount1] = szSectionData [nCount + nCount1] < 32 || szSectionData [nCount + nCount1] >= 127 ? '.' : szSectionData [nCount + nCount1];
+            }
+            else
+            {
+                fprintf (stderr, ".. "); szPData [nCount1] = '.';
+            }
+            
+        }
+        
+        szPData [nCount1] = '\0';
+        
+        fprintf (stderr, "  [%s]\n", szPData);
+    }
+}
+

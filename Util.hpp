@@ -42,12 +42,15 @@
 #include <sys/stat.h>
 #include <vector>
 
-#include "MetaException.hpp"
+using namespace std;
+//#include "MetaException.hpp"
 
-#define CLASSLOG cerr << ClassErrorHeader() << ":"
+#define TRACE if (getDebugState() == true) std::cerr
 
-#define ClassErrorHeader() Util::getStandardErrorHeader (typeid(*this).name(), __FILE__, __LINE__, __FUNCTION__)
-#define FuncErrorHeader() Util::getStandardErrorHeader ("Function", __LINE__, __FUNCTION__)
+void setDebug(bool nState);
+
+bool getDebugState();
+
 
 namespace Util
 {
@@ -74,6 +77,9 @@ namespace Util
     const string getLogLikeTimeStamp ();
     
     const string getStandardErrorHeader (const char* pszClass, int nLine, const char* pszFunction);
+    
+    void  PrintDataToDebug (uint8_t* szSectionData, long int nDataLen);
+    
 }
 
 

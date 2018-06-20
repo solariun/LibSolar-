@@ -32,36 +32,16 @@
 
  
 
-
 #include "Exception.hpp"
 #include <sstream>
-
-#ifndef _DEBUG
-static bool _nDebug = false;
-#else
-static bool _nDebug = true;
-#endif
-
-
-void setDebug(bool nState) {_nDebug = nState;}
-
-bool getDebugState() {return _nDebug; };
-
-
-Exception::Exception (const char* pszType, const char* pszFile, const size_t nFileLine, const char* pszFuncion, const char* pszCode, const size_t nExID, const char* pszStringValue) : pszType(pszType), nExID(nExID)
-{
-    stringstream strData;
-    
-    strData << pszFile << "(" << nFileLine << ")" << pszType << "::" << pszFuncion << " (...):" << pszCode << "[" << nExID << "]: " << pszStringValue;    
-    this->strExText = strData.str();
-}
-
+#include "Util.hpp"
 
 Exception::Exception(const Exception& exException) noexcept
 {
     (*this) = exException;
     return;
 }
+
 
 Exception& Exception::operator=(const Exception& exException) noexcept
 {
@@ -89,6 +69,27 @@ const char* Exception::getExMessage ()
 
 const char* Exception::what() const noexcept
 {
-    return this->pszType;
+    
+    Util::PrintDataToDebug ((uint8_t*) this->strExText.c_str(), this->strExText.length());
+    
+    return (const char*) this->strExText.c_str();
 }
+
+
+const string Exception::getStandardErrorHeader (const char* pszClass, int nLine, const char* pszFunction)
+{
+    string strValue;
+    
+    strValue = strValue + pszClass + "." + pszFunction + "(" + std::to_string(nLine) + ")";
+    
+    return strValue;
+}
+
+
+Exception::Exception(std::string strMessage, uint nErrorID) : strType ("Exception"), strExText(strMessage), nExID(nErrorID)
+{
+    CLASSLOG << "Message: " << strExText << endl;
+}
+
+
 

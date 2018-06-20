@@ -23,5 +23,5 @@ void Database::addField(const std::string &strName, int nFieldType)
 
 void InMemDB::addDatabase(const Database &dataBase)
 {
-    
+    Verify(false, "TESTE", 10, Exception);
 }

@@ -33,15 +33,6 @@
 #include "MetaException.hpp"
 #include <sstream>
 
-#ifndef _DEBUG
-static bool _nDebug = false;
-#else
-static bool _nDebug = true;
-#endif
-
-void setDebug(bool nState) {_nDebug = nState;}
-
-bool getDebugState() {return _nDebug; };
 
 
 inline std::string className(const std::string& prettyFunction)
