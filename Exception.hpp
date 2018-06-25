@@ -34,31 +34,17 @@
  
  .hpp
  
- #ifdef __CLASS_NAME__
- #undef __CLASS_NAME__
- #endif
- 
- #define __CLASS_NAME__ BidirectExec
- 
- class BidirectExecException : public Exception
+ class iniplusException : public Exception
  {
  public:
- BidirectExecException (const char* pszFile, const size_t nFileLine, const char* pszFuncion, const char* pszCode, const size_t nExID, const char* pszStringValue);
- 
- const char* what() noexcept override;
+    iniplusException (std::string strMessage, uint nErrorID);
  };
- 
+
  -------------------------------------------
  .cppp
  
- BidirectExecException::BidirectExecException (const char* pszFile, const size_t nFileLine, const char* pszFuncion, const char* pszCode, const size_t nExID, const char* pszStringValue) : Exception (what(), pszFile, nFileLine, pszFuncion, pszCode, nExID, pszStringValue)
+ iniplusException::iniplusException (std::string strMessage, uint nErrorID): Exception ("iniplus", strMessage, nErrorID)
  {}
- 
- const char* BidirectExecException::what() noexcept
- {
- return STRINGFY (__CLASS_NAME__);
- }
-
 
  */
 
@@ -78,16 +64,15 @@ using namespace std;
 
 #define CLASSLOG cerr << ClassErrorHeader() << ":"
 
-#define ClassErrorHeader() Exception::getStandardErrorHeader (typeid(*this).name(), __LINE__, __FUNCTION__)
-#define FuncErrorHeader() Exception::getStandardErrorHeader ("Function", __LINE__, __FUNCTION__)
+#define ClassErrorHeader() Exception::getExtendedErrorHeader (typeid(*this).name(), __LINE__, __FUNCTION__)
+#define FuncErrorHeader() Exception::getExtendedErrorHeader ("Function", __LINE__, __FUNCTION__)
 
-#define _Verify(cond, text, id, except) { if(!cond) throw except (FuncErrorHeader() + "-" + text, id); }
-#define Verify(cond, text, id, except) { if(!cond) throw except (ClassErrorHeader() + "-" + text, id); }
+#define _Verify(cond, text, id, except) { if(!(cond)) throw except (FuncErrorHeader() + "cond:[" + #cond + "]: " + text, id); }
+#define Verify(cond, text, id, except) { if(!(cond)) throw except (ClassErrorHeader() + "cond:[" + #cond + "]: " + "-" + text, id); }
 
 #define STRINGFY_(x) #x
 #define STRINGFY__(x) STRINGFY_(x)
 #define STRINGFY(x)STRINGFY__(x)
-
 
 #define NOTRACE
 
@@ -115,10 +100,12 @@ protected:
 
 public:
 
-    static const string getStandardErrorHeader (const char* pszClass, int nLine, const char* pszFunction);
+    static const string getExtendedErrorHeader (const char* pszClass, int nLine, const char* pszFunction);
     
+    explicit Exception (string strType, string strMessage, uint nErrorID);
+
     explicit Exception (string strMessage, uint nErrorID);
-    
+
     Exception(const Exception&) noexcept;
     Exception& operator=(const Exception&) noexcept;
     

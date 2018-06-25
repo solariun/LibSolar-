@@ -297,3 +297,24 @@ void  Util::PrintDataToDebug (uint8_t* szSectionData, long int nDataLen)
     }
 }
 
+
+
+const vector<std::string> getFields (const std::string& strData, const std::string strTokens)
+{
+    vector<std::string> vecData;
+    string strTempData;
+    
+    if (strData.length() != 0)
+    {
+        const char* pszData = strData.c_str();
+        char chValue = '\0';
+        
+        
+        while ((chValue = *pszData++) != '\0')
+        {
+            
+        }
+    }
+    
+    return vecData;
+}

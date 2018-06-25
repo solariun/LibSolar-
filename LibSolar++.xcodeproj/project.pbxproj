@@ -8,11 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		67607B542069322100578F21 /* Util.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 67607B502069322100578F21 /* Util.hpp */; };
-		67607B552069322100578F21 /* MetaException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67607B512069322100578F21 /* MetaException.cpp */; };
 		67607B562069322100578F21 /* Util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67607B522069322100578F21 /* Util.cpp */; };
-		67607B572069322100578F21 /* MetaException.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 67607B532069322100578F21 /* MetaException.hpp */; };
-		6775E4A620D1E43200A8C1B1 /* InMemDB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6775E4A420D1E43200A8C1B1 /* InMemDB.cpp */; };
-		6775E4A720D1E43200A8C1B1 /* InMemDB.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 6775E4A520D1E43200A8C1B1 /* InMemDB.hpp */; };
 		6775E4AA20D1E46200A8C1B1 /* Exception.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 6775E4A820D1E46200A8C1B1 /* Exception.hpp */; };
 		6775E4AB20D1E46200A8C1B1 /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6775E4A920D1E46200A8C1B1 /* Exception.cpp */; };
 		67D28BE62069408E006B5924 /* iniplus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67D28BE42069408E006B5924 /* iniplus.cpp */; };
@@ -22,11 +18,7 @@
 /* Begin PBXFileReference section */
 		67607B492069310C00578F21 /* libLibSolar++.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libLibSolar++.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		67607B502069322100578F21 /* Util.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Util.hpp; sourceTree = "<group>"; };
-		67607B512069322100578F21 /* MetaException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MetaException.cpp; sourceTree = "<group>"; };
 		67607B522069322100578F21 /* Util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Util.cpp; sourceTree = "<group>"; };
-		67607B532069322100578F21 /* MetaException.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MetaException.hpp; sourceTree = "<group>"; };
-		6775E4A420D1E43200A8C1B1 /* InMemDB.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = InMemDB.cpp; sourceTree = "<group>"; };
-		6775E4A520D1E43200A8C1B1 /* InMemDB.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = InMemDB.hpp; sourceTree = "<group>"; };
 		6775E4A820D1E46200A8C1B1 /* Exception.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Exception.hpp; sourceTree = "<group>"; };
 		6775E4A920D1E46200A8C1B1 /* Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Exception.cpp; sourceTree = "<group>"; };
 		6795E601206C20030043F7EE /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -51,14 +43,10 @@
 			children = (
 				6775E4A920D1E46200A8C1B1 /* Exception.cpp */,
 				6775E4A820D1E46200A8C1B1 /* Exception.hpp */,
-				6775E4A420D1E43200A8C1B1 /* InMemDB.cpp */,
-				6775E4A520D1E43200A8C1B1 /* InMemDB.hpp */,
 				6795E601206C20030043F7EE /* LICENSE */,
 				6795E602206C20030043F7EE /* README.md */,
 				67D28BE42069408E006B5924 /* iniplus.cpp */,
 				67D28BE52069408E006B5924 /* iniplus.hpp */,
-				67607B512069322100578F21 /* MetaException.cpp */,
-				67607B532069322100578F21 /* MetaException.hpp */,
 				67607B522069322100578F21 /* Util.cpp */,
 				67607B502069322100578F21 /* Util.hpp */,
 				67607B4A2069310C00578F21 /* Products */,
@@ -81,8 +69,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				67607B542069322100578F21 /* Util.hpp in Headers */,
-				6775E4A720D1E43200A8C1B1 /* InMemDB.hpp in Headers */,
-				67607B572069322100578F21 /* MetaException.hpp in Headers */,
 				6775E4AA20D1E46200A8C1B1 /* Exception.hpp in Headers */,
 				67D28BE72069408E006B5924 /* iniplus.hpp in Headers */,
 			);
@@ -145,8 +131,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6775E4A620D1E43200A8C1B1 /* InMemDB.cpp in Sources */,
-				67607B552069322100578F21 /* MetaException.cpp in Sources */,
 				67607B562069322100578F21 /* Util.cpp in Sources */,
 				6775E4AB20D1E46200A8C1B1 /* Exception.cpp in Sources */,
 				67D28BE62069408E006B5924 /* iniplus.cpp in Sources */,

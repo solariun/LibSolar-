@@ -18,7 +18,7 @@
 #include <regex>
 #include <map>
 
-#include "MetaException.hpp"
+#include "Exception.hpp"
 #include "Util.hpp"
 
 
@@ -79,6 +79,14 @@ public:
     
     iniElements_t   nType = none_tag;
     string           strValue = "";
+};
+
+
+
+class iniplusException : public Exception
+{
+public:
+    iniplusException (std::string strMessage, uint nErrorID);
 };
 
 

@@ -41,6 +41,7 @@
 #include <string>
 #include <sys/stat.h>
 #include <vector>
+#include <array>
 
 using namespace std;
 //#include "MetaException.hpp"
@@ -80,6 +81,22 @@ namespace Util
     
     void  PrintDataToDebug (uint8_t* szSectionData, long int nDataLen);
     
+    
+    /*
+     *  getFilds* funcitons are destinated to work in mult-spepareted like
+     *  command line but variable...
+     *  like tokens  ['" ] -> asdf sdfg "aad ad ad ad " 'sdfds sd' 'adf"adf"d'
+     *  it would have
+     *  [1] asdf
+     *  [2] sdfg
+     *  [3] aad ad ad ad | -> including last space
+     *  [4] sdfds sd
+     *  [5] adf"adf"d
+     *
+     *  WARNING - it relays on copy constructor, which means it
+     *        has innerent overhead.
+     */
+    const vector<std::string> getFields (const std::string& strData, const std::string strTokens);
 }
 
 

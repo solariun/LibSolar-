@@ -14,17 +14,21 @@
 #include <stdlib.h>
 
 
+iniplusException::iniplusException (std::string strMessage, uint nErrorID): Exception ("iniplus", strMessage, nErrorID)
+{}
+
+
 iniplus::iniplus (const char* pszINIFileName) : strFileName(pszINIFileName)
 {
     
     ifstream* ifsFile;
     
-    VERIFY(Util::getFileSize(pszINIFileName) > 0, EXCEPT_INI_FILE_DOSENT_EXIST_OR_ZERO, "Errro, file is zero or does not exist.");
+    Verify(Util::getFileSize(pszINIFileName) > 0, "Errro, file is zero or does not exist.", EXCEPT_INI_FILE_DOSENT_EXIST_OR_ZERO, iniplusException);
     
     ifsFile = new ifstream (pszINIFileName);
     //int errn = errno;
     
-    VERIFY ((ifsFile->rdstate() & std::ifstream::failbit) == 0, EXCEPT_INI_FILE_NOT_READ, "File could not be read.");
+    Verify((ifsFile->rdstate() & std::ifstream::failbit) == 0, "File could not be read.", EXCEPT_INI_FILE_NOT_READ, iniplusException);
     
     this->isIn = ifsFile;
     
@@ -90,11 +94,11 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
             }
             if (nType == value_tag)
             {
-                VERIFY(strAttribute.length() > 0, EXCEPT_INI_INVALID_ATTRIBUTE_VALUE, "Error, no Attribute value available.");
+                Verify (strAttribute.length() > 0, "Error, no Attribute value available.", EXCEPT_INI_INVALID_ATTRIBUTE_VALUE, iniplusException);
                 
                 if (lexItem.nType == attributive_tag)
                 {
-                    VERIFY(getNextLexicalItem(lexItem) != NULL && lexItem.nType == string_tag, EXCEPT_INI_SYNT_ERROR_INVALID_VALUE, "Syntatic Error, no correct value given");
+                    Verify (getNextLexicalItem(lexItem) != NULL && lexItem.nType == string_tag, "Syntatic Error, no correct value given", EXCEPT_INI_SYNT_ERROR_INVALID_VALUE, iniplusException);
                     
                     mapIniData.insert (pair<string, string> (strPath + "." + strAttribute, lexItem.strValue));
                     
@@ -113,7 +117,7 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
         }
         else
         {
-            VERIFY (strPath.length() == 0 && lexItem.nType == session_tag, EXCEPT_INI_FAIL_ADD_VALUE_NO_SESSION, "Error, Trying to add values with no session open, please revise the ini structure.");
+            Verify (strPath.length() == 0 && lexItem.nType == session_tag, "Error, Trying to add values with no session open, please revise the ini structure.", EXCEPT_INI_FAIL_ADD_VALUE_NO_SESSION, iniplusException);
         }
     }
 }
@@ -309,7 +313,7 @@ string iniplus::getString (const char* pszINIPath)
     
     mapPos = mapIniData.find(pszINIPath);
     
-    VERIFY (mapPos != mapIniData.end(), EXCEPT_INI_NO_INIPATH_FOUND, "Error, element not found.");
+    Verify (mapPos != mapIniData.end(), "Error, element not found.", EXCEPT_INI_NO_INIPATH_FOUND, iniplusException);
     
     return mapPos->second;
 }

@@ -69,20 +69,25 @@ const char* Exception::getExMessage ()
 
 const char* Exception::what() const noexcept
 {
-    
     Util::PrintDataToDebug ((uint8_t*) this->strExText.c_str(), this->strExText.length());
     
     return (const char*) this->strExText.c_str();
 }
 
 
-const string Exception::getStandardErrorHeader (const char* pszClass, int nLine, const char* pszFunction)
+const string Exception::getExtendedErrorHeader (const char* pszClass, int nLine, const char* pszFunction)
 {
     string strValue;
     
     strValue = strValue + pszClass + "." + pszFunction + "(" + std::to_string(nLine) + ")";
     
     return strValue;
+}
+
+
+Exception::Exception(std::string strType, std::string strMessage, uint nErrorID) : strType (strType), strExText(strMessage), nExID(nErrorID)
+{
+    CLASSLOG << "Message: " << strExText << endl;
 }
 
 
