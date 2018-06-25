@@ -299,20 +299,33 @@ void  Util::PrintDataToDebug (uint8_t* szSectionData, long int nDataLen)
 
 
 
-const vector<std::string> getFields (const std::string& strData, const std::string strTokens)
+const vector<std::string> Util:: getFields (const std::string& strData, const std::string strTokens)
 {
     vector<std::string> vecData;
     string strTempData;
+    const char* pszToken = strTokens.c_str();
     
     if (strData.length() != 0)
     {
         const char* pszData = strData.c_str();
         char chValue = '\0';
-        
+        char chToken = 0;
+        bool boolTKLookup = false;
         
         while ((chValue = *pszData++) != '\0')
         {
-            
+            if (isBetween(chValue, pszToken) == true)
+            {
+                if (chToken == chValue && boolTKLookup == true)
+                    continue;
+                
+                chToken = chValue;
+                boolTKLookup = true;
+            }
+            else if (boolTKLookup == true)
+            {
+                if (
+            }
         }
     }
     
