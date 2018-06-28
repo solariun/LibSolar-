@@ -79,7 +79,7 @@ const string Exception::getExtendedErrorHeader (const char* pszClass, int nLine,
 {
     string strValue;
     
-    strValue = strValue + pszClass + "." + pszFunction + "(" + std::to_string(nLine) + ")";
+    strValue = Util::getLogLikeTimeStamp() + "," + strValue + pszClass + "." + pszFunction + "(" + std::to_string(nLine) + ")";
     
     return strValue;
 }

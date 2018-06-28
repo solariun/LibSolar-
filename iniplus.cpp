@@ -47,7 +47,6 @@ iniplus::iniplus (const char* pszINIFileName) : strFileName(pszINIFileName)
         throw;
     }
     
-    
     this->isIn->close();
 }
 
@@ -64,12 +63,12 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
     
     if (strPath.length() > 0)
     {
-        TRACE << "Entering level (" << nDepth << ") [" << strPath << "]" << endl;
+        CLASSLOG << "Entering level (" << nDepth << ") [" << strPath << "]" << endl;
     }
     
     while (getNextLexicalItem(lexItem) != NULL)
     {
-        //TRACE << "strPath: [" << strPath.length() << "] Received Lex Item: (" << lexItem.nType << ") [" << lexItem.strValue << "]" << endl;
+        CLASSLOG << "strPath: [" << strPath.length() << "] Received Lex Item: (" << lexItem.nType << ") [" << lexItem.strValue << "]" << endl;
         
         if (lexItem.nType == session_tag)
         {
@@ -86,8 +85,8 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
                 }
                 else if (lexItem.nType == close_struct_tag)
                 {
-                    //TRACE << "---------------------------------" << endl;
-                    //TRACE << "Leving Level " << nDepth << "..." << endl << endl;
+                    CLASSLOG << "---------------------------------" << endl;
+                    CLASSLOG << "Leving Level " << nDepth << "..." << endl << endl;
 
                     return;
                 }
@@ -102,7 +101,7 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
                     
                     mapIniData.insert (pair<string, string> (strPath + "." + strAttribute, lexItem.strValue));
                     
-                    TRACE << "Adding: [" << strPath << "." << strAttribute << "] = [" << lexItem.strValue << "]" << endl;
+                    CLASSLOG << "Adding: [" << strPath << "." << strAttribute << "] = [" << lexItem.strValue << "]" << endl;
                     
                     nType = none_tag;
                 }
@@ -110,7 +109,7 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
                 {
                     parseINI(strPath + "." + strAttribute, nDepth + 1);
                     
-                    //TRACE << "Returned to: [" << strPath << "]" << endl;
+                    //CLASSLOG << "Returned to: [" << strPath << "]" << endl;
                     nType = none_tag;
                 }
             }
@@ -145,7 +144,8 @@ iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserItem)
         chChar = isIn->get();
         stzTemp [0] = chChar; //securely stringfing chChar...
         
-        //TRACE << chChar << " tp: " << nType << " : String: [" << strData << "]" <<  " EOF: " << isIn->eof () << endl;
+        //CLASSLOG << chChar << " tp: " << nType << " : String: [" << strData << "]" <<  " EOF: " << isIn->eof () << endl;
+        
         
         if (boolDiscartComment == true)
         {
@@ -155,13 +155,13 @@ iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserItem)
                 isIn->putback(chChar);
             }
             
-            TRACE << chChar;
+            CLASSLOG << chChar;
         }
         else if (nType != string_quote_tag && chChar == '#')
         {
             boolDiscartComment = true;
             
-            TRACE << "Starting Discarting..." << endl;
+            CLASSLOG << "Starting Discarting..." << endl;
         }
         else if (nType == none_tag)
         {
@@ -302,9 +302,9 @@ bool iniplus::Exists (const char* pszINIPath)
  * Conversion types lookup functions functions 
  */
 
-string iniplus::getStringFromRef (string& strRet, const char* pszINIPath)
+void iniplus::getStringFromRef (string& strRet, const char* pszINIPath)
 {
-    return (strRet = getString(pszINIPath));
+    strRet = getString(pszINIPath);
 }
 
 string iniplus::getString (const char* pszINIPath)

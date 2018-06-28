@@ -112,7 +112,7 @@ public:
     
     iniplus (const char* pszINIFileName);
     
-    string getStringFromRef (string& strRet, const char* pszINIPath);
+    void getStringFromRef (string& strRet, const char* pszINIPath);
     string getString (const char* pszINIPath);
   
     bool Exists (const char* pszINIPath);

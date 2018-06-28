@@ -105,9 +105,11 @@ std::string Util::trim_copy(std::string s)
 
 bool Util::isBetween (char chChar, const char* pszCharList, int32_t nMaxCharList=0)
 {
+    nMaxCharList = (int32_t)(nMaxCharList == 0 ? strlen(pszCharList) : nMaxCharList) - 1;
+    
     while ((nMaxCharList) >= 0 && pszCharList [nMaxCharList] != chChar)
     {
-        //std::cout << "comparing: (" << nMaxCharList<< ") [" << (int) pszCharList [nMaxCharList+1] << "] [" << (int) chChar  <<  "]" << std::endl;
+        //std::cerr << "comparing: (" << nMaxCharList<< ") [" << (int) pszCharList [nMaxCharList+1] << "] [" << (int) chChar  <<  "]" << std::endl;
         nMaxCharList--;
     };
     
@@ -310,23 +312,70 @@ const vector<std::string> Util:: getFields (const std::string& strData, const st
         const char* pszData = strData.c_str();
         char chValue = '\0';
         char chToken = 0;
-        bool boolTKLookup = false;
+        bool boolTKLookup = true;
+        bool boolPushChar = false;
+        bool boolIsBetween = false;
         
         while ((chValue = *pszData++) != '\0')
         {
-            if (isBetween(chValue, pszToken) == true)
+            
+            //cerr << "strTemp: [" << strTempData << "], chValue: [" << chValue << "], chToken: [" << chToken << "," << ((int) chToken) << "], bookLookup: [" << boolTKLookup << "], boolPush: [" << boolPushChar << "]" << endl;
+            
+            if(boolPushChar == false)
             {
-                if (chToken == chValue && boolTKLookup == true)
-                    continue;
-                
-                chToken = chValue;
-                boolTKLookup = true;
+                boolIsBetween = isBetween(chValue, pszToken);
+                    
+                if (boolTKLookup == true)
+                {
+                    if (boolIsBetween == true)
+                    {
+                        if (chToken == ' ' && chToken == chValue)
+                            continue;
+                        
+                        chToken = chValue;
+                        
+                        if(*(pszData+1) != '\0')
+                        {
+                            boolTKLookup = false;
+                        }
+                        
+                        continue;
+                    }
+                    else
+                    {
+                        pszData--; //To force push-back
+                        boolTKLookup = false;
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (boolIsBetween && chToken == chValue)
+                    {
+                        vecData.push_back(strTempData);
+                        strTempData = "";
+                        
+                        boolTKLookup = true;
+                        continue;
+                    }
+                    else if (chValue == '\\')
+                    {
+                        boolPushChar = true;
+                        continue;
+                    }
+                }
             }
-            else if (boolTKLookup == true)
+            
+            if ((boolTKLookup == false || boolPushChar == true) && chValue != chToken)
             {
-                if (
+                if (boolPushChar == true) boolPushChar = false;
+                
+                strTempData += chValue;
             }
         }
+        
+        if (strTempData.length() > 0)
+            vecData.push_back(strTempData);
     }
     
     return vecData;

@@ -63,12 +63,15 @@
 using namespace std;
 
 #define CLASSLOG cerr << ClassErrorHeader() << ":"
+#define _LOG cerr << FuncErrorHeader() << ":"
 
 #define ClassErrorHeader() Exception::getExtendedErrorHeader (typeid(*this).name(), __LINE__, __FUNCTION__)
 #define FuncErrorHeader() Exception::getExtendedErrorHeader ("Function", __LINE__, __FUNCTION__)
 
 #define _Verify(cond, text, id, except) { if(!(cond)) throw except (FuncErrorHeader() + "cond:[" + #cond + "]: " + text, id); }
 #define Verify(cond, text, id, except) { if(!(cond)) throw except (ClassErrorHeader() + "cond:[" + #cond + "]: " + "-" + text, id); }
+
+#define VERIFY(cond, id, text) _Verify(cond, text, id, Exception)
 
 #define STRINGFY_(x) #x
 #define STRINGFY__(x) STRINGFY_(x)
