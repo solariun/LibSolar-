@@ -8,7 +8,7 @@
  */
 
 #include "Exception.hpp"
-#include "jpeg.h"
+#include "jpeg.hpp"
 
 /*
 #ifdef __cplusplus

@@ -71,7 +71,7 @@ using namespace std;
 #define _Verify(cond, text, id, except) { if(!(cond)) throw except (FuncErrorHeader() + "cond:[" + #cond + "]: " + text, id); }
 #define Verify(cond, text, id, except) { if(!(cond)) throw except (ClassErrorHeader() + "cond:[" + #cond + "]: " + "-" + text, id); }
 
-#define VERIFY(cond, id, text) _Verify(cond, text, id, Exception)
+#define VERIFY(cond, text, ret) {if(!(cond)) { _LOG << ":" << text << endl; return ret; }}
 
 #define STRINGFY_(x) #x
 #define STRINGFY__(x) STRINGFY_(x)

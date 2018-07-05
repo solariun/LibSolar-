@@ -7,7 +7,9 @@
  *
  */
 
-#include "graphic.h"
+
+#include "graphic.hpp"
+#include <math.h>
 
 GraphicException::GraphicException (std::string strMessage, uint nErrorID): Exception ("Graphic", strMessage, nErrorID)
 {}
@@ -60,6 +62,18 @@ Color MkColor(uint8_t nR, uint8_t nG, uint8_t nB, uint8_t nAlpha)
 	stColor.nAlpha = nAlpha;
 	
 	return stColor;
+}
+
+
+Color MkColor(const string strColor)
+{
+    unsigned long long  nValue = std::strtoull (strColor.c_str(), nullptr, 16);
+    
+    Color colorValue = MkColor(nValue >> 32, nValue << 8 >> 16, nValue << 16 >> 8, nValue << 32);
+    
+    _LOG << "nValue: [" << nValue << ", R: [" << (int) colorValue.nR << "], G: [" << (int)colorValue.nG << "], B: [" << (int)colorValue.nB <<"], Alpha: [" << (int)colorValue.nAlpha << "]" << endl;
+    
+    return colorValue;
 }
 
 
@@ -385,7 +399,7 @@ bool Graphic::GetBlock (unsigned int nX, unsigned int nY, unsigned int nBlkWidth
 			BlkColor [XYRASTER_GETBLOCK] = GetPixel (nCountx, nCounty);
 			
 			
-			NOTRACE ("Blocos: [%d] [%d] Array Location: [%d]\n", nCountx - nX, nCounty - nY, XYRASTER_GETBLOCK);
+			//TRACE ("Blocos: [%d] [%d] Array Location: [%d]\n", nCountx - nX, nCounty - nY, XYRASTER_GETBLOCK);
 		}
 	
 	return true;
@@ -459,7 +473,7 @@ inline int Graphic::PSet (int nX, int nY, int nAlpha, Color stColor)
 		
 	}
 
-	NOTRACE ("Setting R:[%-2u] G:[%-2u] B:[%-2u] A:[%-2u]\n", stColor.nR, stColor.nG, stColor.nB, stColor.nAlpha);
+	//TRACE ("Setting R:[%-2u] G:[%-2u] B:[%-2u] A:[%-2u]\n", stColor.nR, stColor.nG, stColor.nB, stColor.nAlpha);
 
 	if (nX < 0 || nY < 0 || nX >= (nImageWidth) || nY >= (nImageHeight)) 
 		return true;
@@ -560,13 +574,13 @@ int Graphic::IDrawLine (int x0, int y0, int x1, int y1, int nAlpha, Color stColo
 int Graphic::DrawLine (int x1, int y1, int x2, int y2, int nAlpha, Color stColor)
 {
     int myx, myy;
-    double slope;
-    double myslope;
+    double slope=0;
+    //double myslope;
     double curx, cury;
     int done = 0;
     int temp;
-    double draw_count = 0.0;
-    double on_off_size = 0.0;
+    //double draw_count = 0.0;
+    //double on_off_size = 0.0;
     
     /* x2 should always be greater than x1 */
     if ( x2 < x1 ) {
@@ -596,7 +610,9 @@ int Graphic::DrawLine (int x1, int y1, int x2, int y2, int nAlpha, Color stColor
     
     PutPixel ( x1, y1, nAlpha, stColor );
     
+    
     /* handle dashes */
+    /*
     if ( false ) {
         if ( x1 == x2 || ABS ( slope ) < 0.1 || ABS  ( slope ) > 10 ) {
             on_off_size = ON_OFF_PIXELS;
@@ -605,11 +621,12 @@ int Graphic::DrawLine (int x1, int y1, int x2, int y2, int nAlpha, Color stColor
             myslope = ABS ( slope );
             if ( myslope > 1.0 )
                 myslope = 1.0 / myslope;
-            /* myslope now between 0 and 1.0 */
+            //myslope now between 0 and 1.0
             on_off_size = ON_OFF_PIXELS + ( 0.41 * myslope );
         }
     }
-    
+    */
+
     while ( ! done ) {
         if ( x1 == x2 ) {
             if ( cury >= (double)y2 )
@@ -650,11 +667,13 @@ int Graphic::DrawLine (int x1, int y1, int x2, int y2, int nAlpha, Color stColor
             }
         }
         
+        /*
         if ( false ) {
             draw_count += 1.0;
             if ( ( (int)( floor ( draw_count / on_off_size ) ) % 2 ) == 1 )
                 continue;
         }
+        */
         
         if ( ! done ) {
             myx = (int) curx;
@@ -689,7 +708,7 @@ int Graphic::DrawLine (int x1, int y1, int x2, int y2, int nAlpha, Color stColor
 
 int Graphic::DrawArc (int x, int y, int r1, int r2, int a1, int a2, int nAlpha, Color stColor)
 {
-    int myx, myy, lastx, lasty, N, loop;
+    int myx=0, myy=0, lastx=0, lasty=0, N=0, loop=0;
     double a, da;
     
     /* because our y is upside down, make all angles their negative */
@@ -742,12 +761,12 @@ int Graphic::DrawCircle (int nX, int nY, int nLenght, int nIsFill, int nAlpha, C
 void Graphic::BasicDrawWidth (int* x, int * y, const char *dr)
 {
     int f1=0,f2=0;
-    int n,i;
+    int n=0,i=0;
     char c,nc[10]="";
-    int ncCount;
-    int nInfo;
+    int ncCount = 0;
+    int nInfo=0;
     
-    n=strlen(dr);
+    n=(int) strlen(dr);
     
     nInfo = 0;
     
@@ -756,7 +775,7 @@ void Graphic::BasicDrawWidth (int* x, int * y, const char *dr)
         c=toupper(dr[i]);
         /* Controle de Funcao */
         
-        if(f2 && !isdigit(c) || i==n)
+        if( (f2 && !isdigit(c)) || i==n )
         {            
             if(f1==0)
             {
@@ -868,12 +887,12 @@ void Graphic::GPrintWidth (int* nX, int* nY, char* pszText)
 void Graphic::BasicDraw (int* x, int * y, int nAlpha, Color stColor, const char *dr)
 {
     int f1=0,f2=0;
-    int n,i;
+    int n=0,i=0;
     char c,nc[10]="";
-    int ncCount;
-    int nInfo;
+    int ncCount=0;
+    int nInfo = 0;
     
-    n=strlen(dr);
+    n=(int) strlen(dr);
     
     nInfo = 0;
     
@@ -882,7 +901,7 @@ void Graphic::BasicDraw (int* x, int * y, int nAlpha, Color stColor, const char 
         c=toupper(dr[i]);
         /* Controle de Funcao */
         
-        if(f2 && !isdigit(c) || i==n)
+        if( (f2 && !isdigit(c)) || i==n)
         {            
             if(f1==0)
             {
@@ -984,7 +1003,7 @@ int Graphic::DrawXPM (int nPX, int nPY, int nLX, int nLY, int nWidth, int nHeigh
     char szRGBHexa [26];
 	
 	
-    VERIFY (ppszData != NULL, "O Fluxo de dados para imagem fornecido esta nulo.", false);
+    Verify (ppszData != NULL, "O Fluxo de dados para imagem fornecido esta nulo.", 5,  GraphicException);
     
     sscanf (ppszData [0], "%d %d %d %d", &nLWidth, &nLHeight, &nColors, &nCols);
 	
@@ -993,15 +1012,15 @@ int Graphic::DrawXPM (int nPX, int nPY, int nLX, int nLY, int nWidth, int nHeigh
 		nLX = 1; nLY = 1;
 		nWidth = nLWidth; nHeight = nLHeight;
 		
-		NOTRACE ("Setting full XPM Image nLX: [%u] nLY: [%u] nWidth: [%u] nHeight: [%u]\n", nLX, nLY, nWidth, nHeight);
+		//TRACE ("Setting full XPM Image nLX: [%u] nLY: [%u] nWidth: [%u] nHeight: [%u]\n", nLX, nLY, nWidth, nHeight);
 	}
 	
-	VERIFY (nColors < 0xFFFF, "Numero de cores não suportado, máximo de %u", 0xFFFF - 1);
+    Verify (nColors < 0xFFFF, "Maximun number of supported colors: "+ std::to_string(0xFFFF-1), 1, GraphicException);
 	
 	/* Create Cores array into local heap*/
 	struct Cor Cores [nColors];
 	
- 	VERIFY (nCols < sizeof (Cores [0].XColorData), "Numero de cores incompat�vel");
+ 	Verify (nCols < sizeof (Cores [0].XColorData), "Incompatible number of collors", 1, GraphicException);
 	
 	
     for (nCount=0; nCount < nColors; nCount++)
@@ -1026,7 +1045,7 @@ int Graphic::DrawXPM (int nPX, int nPY, int nLX, int nLY, int nWidth, int nHeigh
         }
         else 
         {
-			nColorValue = strtol (&szRGBHexa [1], NULL, 16);
+			nColorValue = (uint32_t) strtol (&szRGBHexa [1], NULL, 16);
 			
 			Cores [nCount].stColor.nR = (nColorValue & 0xff0000L) >> 16;
 			Cores [nCount].stColor.nG = (nColorValue & 0x00ff00L) >> 8;
@@ -1035,10 +1054,10 @@ int Graphic::DrawXPM (int nPX, int nPY, int nLX, int nLY, int nWidth, int nHeigh
             
         }
 		
-		 NOTRACE ("ADD [%s] : R:[%-2u] G:[%-2u] B:[%-2u]\n", Cores [nCount].XColorData, Cores [nCount].stColor.nR, Cores [nCount].stColor.nG, Cores [nCount].stColor.nB);
+		 //TRACE ("ADD [%s] : R:[%-2u] G:[%-2u] B:[%-2u]\n", Cores [nCount].XColorData, Cores [nCount].stColor.nR, Cores [nCount].stColor.nG, Cores [nCount].stColor.nB);
     }
 
-	 NOTRACE ("COR: %d - R: %-2u G: %-2u B: %-2u \n",  nCount, Cores [nCount].stColor.nR, Cores [nCount].stColor.nG, Cores [nCount].stColor.nB);                            
+	 //TRACE ("COR: %d - R: %-2u G: %-2u B: %-2u \n",  nCount, Cores [nCount].stColor.nR, Cores [nCount].stColor.nG, Cores [nCount].stColor.nB);
 
 	
     for (nCount = nColors + 1 + nLY; nCount < (nLHeight + nColors + 1); nCount++)
@@ -1069,7 +1088,7 @@ int Graphic::DrawXPM (int nPX, int nPY, int nLX, int nLY, int nWidth, int nHeigh
 						&& nX >= nLX && nX <= nLX + nWidth 
 						&& nY >= nLY && nY <= nLY + nHeight)
                     {
-                        NOTRACE ("XPM: (%d) X:%u Y:%u C:[%s]\n", nCounter, nX, nY, Cores [nCounter].XColorData);
+                        //TRACE ("XPM: (%d) X:%u Y:%u C:[%s]\n", nCounter, nX, nY, Cores [nCounter].XColorData);
 						
                         PutPixel (nPX - nLX + nX, nPY - nLY + nY, Cores [nCounter].stColor);                                                        
                     }
@@ -1077,7 +1096,7 @@ int Graphic::DrawXPM (int nPX, int nPY, int nLX, int nLY, int nWidth, int nHeigh
                     if (nY > nLY + nHeight)
                         nInfo = 0;
                     
-                    NOTRACE (".");
+                    //TRACE (".");
                     break;
                 }
             }
@@ -1863,7 +1882,7 @@ Color Graphic::GetColorByName (char* pszColor)
 	{
 		uint32_t nColorValue;
 		
-		nColorValue = strtoll (XPM_Color [nCount].pszName, NULL, 16);
+		nColorValue = (uint32_t) strtoll (XPM_Color [nCount].pszName, NULL, 16);
 		
 		stColor.nR = (nColorValue & 0xff0000L) >> 16;
 		stColor.nG = (nColorValue & 0x00ff00L) >> 8;
@@ -1986,11 +2005,14 @@ unsigned char Graphic::Get8bitsColor(int nX, int nY)
 	}
 	
 	
-	 NOTRACE ("For nX: [%-4d], nY:[%-4d] Color: R:%-2u G:%-2u B:%-2u: Color: [%u]\n",
-		   nX, nY, stColor.nR, stColor.nG, stColor.nB, best_match);
+	 //TRACE ("For nX: [%-4d], nY:[%-4d] Color: R:%-2u G:%-2u B:%-2u: Color: [%u]\n", nX, nY, stColor.nR, stColor.nG, stColor.nB, best_match);
 		   
 	return best_match;
 }
+
+Graphic::Graphic()
+{ /* private */ }
+
 
 
 

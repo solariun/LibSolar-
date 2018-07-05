@@ -51,7 +51,7 @@ typedef struct
  
 Color MkColor(uint8_t nR, uint8_t nG, uint8_t nB);
 Color MkColor(uint8_t nR, uint8_t nG, uint8_t nB, uint8_t nAlpha);
-
+Color MkColor(const string strColor);
 
 class GraphicException : public Exception
 {
@@ -108,6 +108,8 @@ private:
 
 	inline int PSet (int nX, int nY, int nAlpha, Color stColor);
 	
+    Graphic();
+    
 public:
 	uint8_t LineWidth;
 	
@@ -120,6 +122,7 @@ public:
 	bool GetBlock (unsigned int nX, unsigned int nY, unsigned int nBlkWidth, unsigned int nBlkHeight, Color* BlkColor);
 	
 	void SelectDefaultFont(int nFont);
+    
 	Color GetPixel (int nX, int nY);
 	Color GetAlphaPixel (int nX, int nY, Color stColor, int nAlpha);
 

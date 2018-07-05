@@ -13,7 +13,7 @@
 #include "Exception.hpp"
 #include "Util.h"
 //#include <Exception.h>
-#include "graphic.h"
+#include "graphic.hpp"
 
 #ifdef __cplusplus
 extern "C" {

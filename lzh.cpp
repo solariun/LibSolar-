@@ -5,7 +5,7 @@
 /* LZSS coded   	*/
 /* Adaptive Huffman Coding coded */
 
-#include "lzh.h"
+#include "lzh.hpp"
 
 #include <stdio.h>
 #include <stdlib.h>
