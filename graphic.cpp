@@ -67,13 +67,22 @@ Color MkColor(uint8_t nR, uint8_t nG, uint8_t nB, uint8_t nAlpha)
 
 Color MkColor(const string strColor)
 {
-    unsigned long long  nValue = std::strtoull (strColor.c_str(), nullptr, 16);
+    union _uRGBA
+    {
+       uint32_t nValue;
+        
+        struct
+        {
+            uint16_t  nR : 8;
+            uint16_t  nG : 8;
+            uint16_t  nB : 8;
+            uint16_t  nAlpha : 8;
+        };
+    } uRGBA;
     
-    Color colorValue = MkColor(nValue >> 32, nValue << 8 >> 16, nValue << 16 >> 8, nValue << 32);
+    uint32_t nValue = (uint32_t) std::strtoul (strColor.c_str(), nullptr, 16);
     
-    _LOG << "nValue: [" << nValue << ", R: [" << (int) colorValue.nR << "], G: [" << (int)colorValue.nG << "], B: [" << (int)colorValue.nB <<"], Alpha: [" << (int)colorValue.nAlpha << "]" << endl;
-    
-    return colorValue;
+    return MkColor((nValue >> 24) & 0xFF, (nValue >> 16) & 0xFF, (nValue >> 8) & 0xFF, nValue & 0xFF);
 }
 
 

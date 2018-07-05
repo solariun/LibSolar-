@@ -25,7 +25,7 @@
 jpegException::jpegException (std::string strMessage, uint nErrorID): Exception ("jpg", strMessage, nErrorID)
 {}
 
-
+jpeg::jpeg () { /* private */}
 /*
  RGB to YCbCr Conversion:
  */

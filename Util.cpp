@@ -145,7 +145,7 @@ std::string& Util::strToUpper (std::string& strData)
  * it will only clear to no change the memory already allocated.
  */
 
-uint Util::getCSVlikeParser (std::string& strData, const char* pszTokens, uint nTokenSize, std::vector<std::string>& listContainer)
+uint Util::getCSVlikeParser (const std::string& strData, const char* pszTokens, uint nTokenSize, std::vector<std::string>& listContainer)
 {
     
     listContainer.clear();

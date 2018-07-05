@@ -73,7 +73,7 @@ namespace Util
 
     std::string& strToUpper (std::string& strData);
     
-    uint getCSVlikeParser (std::string& strData, const char* pszToken, uint nTokenSize, std::vector<std::string>& listContainer);
+    uint getCSVlikeParser (const std::string& strData, const char* pszToken, uint nTokenSize, std::vector<std::string>& listContainer);
 
     const string getLogLikeTimeStamp ();
     

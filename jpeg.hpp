@@ -150,6 +150,7 @@ private:
 	unsigned huffman_bits(const short value);
 	unsigned huffman_magnitude(const short value);
 
+    jpeg ();
 public:
 	
 	jpeg (Graphic* pGraphic, int nFileDescriptor);
