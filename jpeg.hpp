@@ -68,7 +68,7 @@ extern "C" {
 	//---------------- J P E G ---------------
 	
 	// Application should provide this function for JPEG stream flushing
-	void write_jpeg(const unsigned char buff[], const unsigned size);
+	//void write_jpeg(const unsigned char buff[], const unsigned size);
 	
 	typedef struct huffman_s
 	{
@@ -125,11 +125,9 @@ protected:
     int32_t nWidth, nHeight;
 private:
 	
-	int nFD;
-	
 	//void (*write_jpeg) (const unsigned char buff[], const unsigned size);
 	
-	void write_jpeg (const unsigned char buff[], const unsigned size);
+	//void write_jpeg (const unsigned char buff[], const unsigned size);
 	
 	short quantize(const short data, const unsigned char qt);
 	// code-stream output counter
@@ -153,11 +151,34 @@ private:
     jpeg ();
 public:
 	
-	jpeg (Graphic* pGraphic, int nFileDescriptor);
+    //function<void(string)
+	//jpeg (Graphic* pGraphic, void (*write_jpeg)(const unsigned char* buff, const unsigned size));
+    /* EXEMPLO DE
+    jpeg jpegImage (&gChartContext);
+    */
+    jpeg (Graphic* pGraphic);
 	
-	//virtual void write_jpeg(const unsigned char buff[], const unsigned size) = 0;
-	
-	bool CompressImage ();
+    
+    /*
+     * since it is pure virtual, making this object almost abstract
+     * this fcuntion MUST BE set in order to be used.
+     */
+    //void (*write_jpeg)(const unsigned char buff[], const unsigned size) = nullptr;
+    function<void(const unsigned char*, const unsigned)> write_jpeg;
+    
+    
+    /*
+     COMPREESS Needs to be called with a linear writing data
+     done with lambida...
+    
+     Ex:
+     jpegImage.CompressImage([&](const unsigned char* buff, const unsigned size) -> void
+         {
+         write(nFD, (const void*) buff, size);
+         });
+    */
+    
+	bool CompressImage (function<void(const unsigned char*, const unsigned)> write_jpeg);
 };
 	
 

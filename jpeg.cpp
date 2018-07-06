@@ -979,9 +979,13 @@ void jpeg::subsample(const Color rgb[16][16], short cb[8][8], short cr[8][8])
 
 
 
+/*
+    WARNING: You must provide a function to perform as write interface
+*/
 
+//jpeg::jpeg (Graphic* pGraphic, void (*write_jpeg)(const unsigned char buff[], const unsigned size))
 
-jpeg::jpeg (Graphic* pGraphic, int nFileDescriptor)
+jpeg::jpeg (Graphic* pGraphic)
 {
 	if (pGraphic == NULL) throw ("Error associating a GC Graphic Context.");
 	this->pGraphic = pGraphic;
@@ -990,18 +994,17 @@ jpeg::jpeg (Graphic* pGraphic, int nFileDescriptor)
 	nHeight = this->pGraphic->GetHeight();
     
 	jpgn = 0;
-	
-	nFD = nFileDescriptor;
-	
-	//write_jpeg = NULL;
+    
 	return;
 }
 
 
 
-bool jpeg::CompressImage ()
+bool jpeg::CompressImage (function<void(const unsigned char*, const unsigned)> write_jpeg)
 {
     //TRACE ("Vale: Width: [%lu], Height: [%lu]\n", this->nWidth, this->nHeight);
+    
+    this->write_jpeg = write_jpeg;
     
     Color   RGB16x16[16][16];
 	CACHE_ALIGN short Y8x8[2][2][8][8]; // four 8x8 blocks - 16x16
@@ -1066,13 +1069,12 @@ bool jpeg::CompressImage ()
 	return true;
 }
 
-
+/*
 void jpeg::write_jpeg (const unsigned char buff[], const unsigned size)
 {
 	Verify (write(this->nFD, (const void*) buff, size) >= 0, "", 2, jpegException);
-
 }
-
+*/
 
 
 
