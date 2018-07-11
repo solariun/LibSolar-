@@ -78,9 +78,10 @@ Graphic::Graphic (uint32_t nWidth, uint32_t nHeight)
 {
 	//NOTRACE ("Initilizing....\n");
 	
-	uint32_t	nArrayLen = (uint32_t) nWidth * nHeight;
+	nArrayLen = (uint32_t) ((nWidth * nHeight) * sizeof(Color));
 	
-	ColorBuffer = (Color*) malloc (sizeof (Color) * (nArrayLen + 2));
+    ColorBuffer = new Color [sizeof (Color) * (nArrayLen + 2)]; //(Color*) malloc (sizeof (Color) * (nArrayLen + 2));
+    
 	if (ColorBuffer == NULL)
 		throw ("Error allocing memory for Graphics");
 	
@@ -374,20 +375,18 @@ void Graphic::SelectDefaultFont(int nFont)
 
 bool Graphic::GetBlock (unsigned int nX, unsigned int nY, unsigned int nBlkWidth, unsigned int nBlkHeight, Color* BlkColor)
 {
-#define XYRASTER_GETBLOCK  ((nCounty - nY) * nBlkWidth) + (nCountx - nX)
+#define XYRASTER_GETBLOCK  ((nCounty-nY) * nBlkWidth) + (nCountx - nX)
 
     
-	if (BlkColor == NULL) return false;
-	
 	int nCountx, nCounty;
 	int nDataLen;
 	
 	nDataLen = nBlkWidth * nBlkHeight;
 	
-	memset (BlkColor, 0, sizeof (Color) * nDataLen);
+	memset (&BlkColor, 0, sizeof (Color) * nDataLen);
 
 	for (nCounty = nY; nCounty < nY + nBlkHeight; nCounty++)
-		for (nCountx = nX; nCountx <= nX + nBlkWidth; nCountx++)
+		for (nCountx = nX; nCountx < nX + nBlkWidth; nCountx++)
 		{
 			if (nCountx >= nImageWidth || nCounty > nImageHeight)
 				continue;
@@ -404,14 +403,11 @@ bool Graphic::GetBlock (unsigned int nX, unsigned int nY, unsigned int nBlkWidth
 
 
 
-__inline Color Graphic::GetPixel (int nX, int nY)
+Color Graphic::GetPixel (int nX, int nY)
 {	
     Verify (ColorBuffer != NULL, "No Buffer initialized at this time", 1, GraphicException);
 	
-	Color tmpColor;
-
-	tmpColor.nR = 0L;
-	
+    static Color tmpColor =  { 0 };
 	
     if (nX < 0 || nY < 0 || nX >= (nImageWidth) || nY >= (nImageHeight)) return tmpColor;
 	
@@ -419,13 +415,29 @@ __inline Color Graphic::GetPixel (int nX, int nY)
 }
 
 
+void Graphic::GetPixel (int nX, int nY, Color& color)
+{
+    Verify (ColorBuffer != NULL, "No Buffer initialized at this time", 1, GraphicException);
+    
+    static Color tmpColor = { 0 };
+    
+    if (nX < 0 || nY < 0 || nX >= (nImageWidth) || nY >= (nImageHeight))
+    {
+        color =  tmpColor;
+    }
+    else
+    {
+        color = (Color) ColorBuffer [(size_t) ((nY * nImageWidth) + nX)];
+    }
+}
 
-__inline Color Graphic::GetAlphaPixel (int nX, int nY, Color stSourceColor, int nAlpha)
+
+
+Color Graphic::GetAlphaPixel (int nX, int nY, Color stSourceColor, int nAlpha)
 {	
 	Color TmpColor, TargetColor;
 	
 	TargetColor = GetPixel (nX, nY);
-	TargetColor.nAlpha = nAlpha;
     
     if (nAlpha == 255)
         return stSourceColor;
@@ -435,12 +447,6 @@ __inline Color Graphic::GetAlphaPixel (int nX, int nY, Color stSourceColor, int 
     TmpColor.nR = (uint8_t) ((uint32_t) (stSourceColor.nR * nAlpha / 0xFF) + (TargetColor.nR) * (0xFF - nAlpha) / 0xFF);
     TmpColor.nG = (uint8_t) ((uint32_t) (stSourceColor.nG * nAlpha / 0xFF) + (TargetColor.nG) * (0xFF - nAlpha) / 0xFF);
     TmpColor.nB = (uint8_t) ((uint32_t) (stSourceColor.nB * nAlpha / 0xFF) + (TargetColor.nB) * (0xFF - nAlpha) / 0xFF);
-    
-    /*
-	szSourceRGB [0] = (int)( (szSourceRGB [0] * nAlpha / 0xFF) + (szTargerRGB [0]) * (0xff - nAlpha) / 0xFF);
-	szSourceRGB [1] = (int)( (szSourceRGB [1] * nAlpha / 0xFF) + (szTargerRGB [1]) * (0xff - nAlpha) / 0xFF);
-	szSourceRGB [2] = (int)( (szSourceRGB [2] * nAlpha / 0xFF) + (szTargerRGB [2]) * (0xff - nAlpha) / 0xFF);
-	*/
     
 	return TmpColor;
 }
@@ -457,7 +463,7 @@ int Graphic::PutPixel (int nX, int nY, Color stColor)
 
 
 
-inline int Graphic::PSet (int nX, int nY, int nAlpha, Color stColor)
+int Graphic::PSet (int nX, int nY, int nAlpha, Color stColor)
 {
     if (nGlobalAngle > 0) 
 	{ 
@@ -479,15 +485,18 @@ inline int Graphic::PSet (int nX, int nY, int nAlpha, Color stColor)
         stColor = GetAlphaPixel (nX, nY, stColor, nAlpha);
     }
 	
-    ColorBuffer [(size_t) ((nY * nImageWidth) + nX)] = stColor;
+    size_t nOffset = (size_t) ((nY * nImageWidth) + nX);
+    
+    Verify(nOffset >= nAlpha, "Out of bound", 100, GraphicException);
+    
+    ColorBuffer [nOffset] = stColor;
 	
 	return true;
 }
 
 
 
-
-__inline int Graphic::PutPixel (int nX, int nY, int nAlpha, Color stColor) 
+int Graphic::PutPixel (int nX, int nY, int nAlpha, Color stColor)
 {
 	if (ColorBuffer == NULL) return -1;
 		
@@ -962,7 +971,7 @@ void Graphic::BasicDraw (int* x, int * y, int nAlpha, Color stColor, const char 
 }
 
 
-inline char* Graphic::Tolower (char* pszText)
+char* Graphic::Tolower (char* pszText)
 {
 	while ((unsigned char) *pszText != '\0') { pszText [0] = tolower (pszText [0]); pszText++;}
 	
@@ -1926,7 +1935,7 @@ int Graphic::DrawFillBox (int x, int y, int x2, int y2, int nAlpha, Color stColo
 
 
 // convert an xterm color value (0-253) to 3 unsigned chars rgb
-inline void Graphic::XTerm2RGB(unsigned char color, unsigned char* rgb)
+void Graphic::XTerm2RGB(unsigned char color, unsigned char* rgb)
 {
 	// 16 basic colors
 	if(color<16)
@@ -2020,7 +2029,7 @@ Graphic::Graphic()
 // read a hex-rgb-color like "CCAABB"
 // output are 3 unsigned chars
 // returns 0 on failure and 1 on success
-inline int Graphic::ReadColor(const char* rgb_string, unsigned char* output)
+int Graphic::ReadColor(const char* rgb_string, unsigned char* output)
 {
 	char Xr[3], Xg[3], Xb[3];
 	
@@ -2040,7 +2049,7 @@ inline int Graphic::ReadColor(const char* rgb_string, unsigned char* output)
 
 
 
-inline long long Graphic::XTerm2RGB2 (unsigned char color)
+long long Graphic::XTerm2RGB2 (unsigned char color)
 {		
 	//long long nRetValue;
 	unsigned char szValue [10];

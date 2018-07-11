@@ -41,14 +41,20 @@
 /*
  Define a structure of a Color
  */
-typedef struct
+
+typedef union
 {
-	uint8_t  nR;
-	uint8_t  nG;
-	uint8_t  nB;
-	uint8_t  nAlpha;
+    uint32_t nRGB;
+    struct
+    {
+        uint8_t  nR;
+        uint8_t  nG;
+        uint8_t  nB;
+        uint8_t  nAlpha;
+    };
 } Color;
- 
+
+
 Color MkColor(uint8_t nR, uint8_t nG, uint8_t nB);
 Color MkColor(uint8_t nR, uint8_t nG, uint8_t nB, uint8_t nAlpha);
 Color MkColor(const string strColor);
@@ -87,6 +93,8 @@ protected:
 	char GFont[96][145];
 
 private:
+    
+    uint32_t nArrayLen;
 
 	uint32_t nGlobalX, nGlobalY;
 	
@@ -124,6 +132,8 @@ public:
 	void SelectDefaultFont(int nFont);
     
 	Color GetPixel (int nX, int nY);
+    void  GetPixel (int nX, int nY, Color& color);
+    
 	Color GetAlphaPixel (int nX, int nY, Color stColor, int nAlpha);
 
 	int PutPixel (int nX, int nY, Color stColor);

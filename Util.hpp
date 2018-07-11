@@ -41,7 +41,6 @@
 #include <string>
 #include <sys/stat.h>
 #include <vector>
-#include <array>
 
 using namespace std;
 //#include "MetaException.hpp"
@@ -97,6 +96,8 @@ namespace Util
      *        has innerent overhead.
      */
     const vector<std::string> getFields (const std::string& strData, const std::string strTokens);
+    
+    void PrintStandardTypeSizes();
 }
 
 

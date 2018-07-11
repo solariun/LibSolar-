@@ -380,3 +380,19 @@ const vector<std::string> Util:: getFields (const std::string& strData, const st
     
     return vecData;
 }
+
+
+void Util::PrintStandardTypeSizes()
+{
+    printf ("short             : %ld\n", sizeof (short)*8);
+    printf ("short int         : %ld\n", sizeof (short int)*8);
+    printf ("int               : %ld\n", sizeof (int)*8);
+    printf ("long int          : %ld\n", sizeof (long int)*8);
+    printf ("long long int     : %ld\n", sizeof (long long int)*8);
+    printf ("signed            : %ld\n", sizeof (signed)*8);
+    printf ("unsigned          : %ld\n", sizeof (unsigned)*8);
+    printf ("long              : %ld\n", sizeof (long)*8);
+    printf ("double            : %ld\n", sizeof (double)*8);
+    printf ("float             : %ld\n", sizeof (float)*8);
+    printf ("long double       : %ld\n", sizeof (long double)*8);
+}

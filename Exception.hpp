@@ -86,7 +86,7 @@ void setDebug(bool nState);
 
 bool getDebugState();
 
-
+typedef unsigned int uint;
 
 
 class Exception
