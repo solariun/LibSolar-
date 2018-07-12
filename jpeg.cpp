@@ -30,19 +30,19 @@ jpeg::jpeg (): pGraphic(*(new Graphic(1,1))) { /* private */}
  RGB to YCbCr Conversion:
  */
 // Y = 0.299*R + 0.587*G + 0.114*B
-constexpr int16_t RGB2Y(const color r, const color g, const color b)
+__inline color RGB2Y(const color r, const color g, const color b)
 {
-    return (color) ((153*r + 301*g + 58*b)>>9);
+    return (153*r + 301*g + 58*b)>>9;
 }
 // Cb = -0.1687*R - 0.3313*G + 0.5*B + 128
-constexpr int16_t RGB2Cb(const color r, const color g, const color b)
+__inline color RGB2Cb(const color r, const color g, const color b)
 {
-    return (color) ((65536 - 86*r - 170*g + 256*b)>>9);
+    return (65536 - 86*r - 170*g + 256*b)>>9;
 }
 // Cr = 0.5*R - 0.4187*G - 0.0813*B + 128
-constexpr int16_t RGB2Cr(const color r, const color g, const color b)
+__inline color RGB2Cr(const color r, const color g, const color b)
 {
-    return (color) ((65536 + 256*r - 214*g - 42*b)>>9);
+    return (65536 + 256*r - 214*g - 42*b)>>9;
 }
 
 
@@ -959,6 +959,7 @@ void jpeg::huffman_encode(huffman_t *const ctx, const int16_t data[])
 void jpeg::subsample(const Color rgb[16][16], int16_t cb[8][8], int16_t cr[8][8])
 {
     color R, G, B;
+    
     for (unsigned r = 0; r < 8; r++)
         for (unsigned c = 0; c < 8; c++)
         {
@@ -966,12 +967,12 @@ void jpeg::subsample(const Color rgb[16][16], int16_t cb[8][8], int16_t cr[8][8]
             unsigned cc = (c<<1);
             
             // calculating average values
-            R = (rgb[rr][cc].nR + rgb[rr][cc+1].nR
-                       + rgb[rr+1][cc].nR + rgb[rr+1][cc+1].nR) >> 2;
-            G = (rgb[rr][cc].nG + rgb[rr][cc+1].nG
-                       + rgb[rr+1][cc].nG + rgb[rr+1][cc+1].nG) >> 2;
-            B = (rgb[rr][cc].nB + rgb[rr][cc+1].nB
-                       + rgb[rr+1][cc].nB + rgb[rr+1][cc+1].nB) >> 2;
+            R = ((rgb[rr][cc].nR + rgb[rr][cc+1].nR
+                       + rgb[rr+1][cc].nR + rgb[rr+1][cc+1].nR) >> 2);
+            G = ((rgb[rr][cc].nG + rgb[rr][cc+1].nG
+                       + rgb[rr+1][cc].nG + rgb[rr+1][cc+1].nG) >> 2);
+            B = ((rgb[rr][cc].nB + rgb[rr][cc+1].nB
+                       + rgb[rr+1][cc].nB + rgb[rr+1][cc+1].nB) >> 2);
             
             cb[r][c] = RGB2Cb(R, G, B)-128;
             cr[r][c] = RGB2Cr(R, G, B)-128;
@@ -1008,30 +1009,21 @@ bool jpeg::GetBlock (unsigned int nX, unsigned int nY, Color* BlkColor)
     unsigned int nBlkWidth = 16;
     unsigned int nBlkHeight = 16;
     
-    uint nCountx, nCounty;
-    uint nDataLen;
-    uint nOffset;
+    int nCountx, nCounty;
+    int nOffset;
     
-    int nImageWidth = pGraphic.GetWidth();
-    int nImageHeight = pGraphic.GetHeight();
-    
-    nDataLen = nBlkWidth * nBlkHeight;
     
     //memset (BlkColor, 0, sizeof (Color) * nDataLen);
     
     for (nCounty = nY; nCounty < nY + (nBlkHeight); nCounty++)
         for (nCountx = nX; nCountx < nX + (nBlkWidth); nCountx++)
         {
-            //printf ("Blocos: (%d,%d) [%d] [%d] Array Location: [%d]\n", nX, nY, nCountx - nX, nCounty - nY, XYRASTER_GETBLOCK);
+            printf ("Blocos: (%d,%d) [%d] [%d] Array Location: [%d]\n", nX, nY, nCountx - nX, nCounty - nY, XYRASTER_GETBLOCK);
 
-            if (nCountx >= nImageWidth || nCounty > nImageHeight)
-                continue;
-            
             nOffset = (int) XYRASTER_GETBLOCK;
+            pGraphic.GetPixel (nCountx+6, nCounty, BlkColor [nOffset]);
             
-            pGraphic.GetPixel (nCountx, nCounty, BlkColor [nOffset]);
-            
-            //_LOG <<"    -> R: [" << (int) BlkColor [nOffset].nR << "], G: [" << (int) BlkColor [nOffset].nG << "], B: [" << (int) BlkColor [nOffset].nB << "]" << endl;
+            //_LOG <<"    -> R: [" << (int) BlkColor [nOffset].nR << "], G: [" << (int) BlkColor [nOffset].nG << "], B: [" << BlkColor [nOffset].nB << "]" << endl;
             
         }
     
@@ -1046,18 +1038,21 @@ bool jpeg::CompressImage ()
     //this->write_jpeg = write_jpeg;
     
     
-    Color   RGB16x16[16][16];
+    CACHE_ALIGN Color   RGB16x16[16][16];
     
-    int16_t Y8x8[2][2][8][8]; // four 8x8 blocks - 16x16
-    int16_t Cb8x8[8][8];
-    int16_t Cr8x8[8][8];
+    CACHE_ALIGN int16_t Y8x8[2][2][8][8]; // four 8x8 blocks - 16x16
+    CACHE_ALIGN int16_t Cb8x8[8][8];
+    CACHE_ALIGN int16_t Cr8x8[8][8];
     
-    uint16_t rr;
-    uint16_t cc;
+    CACHE_ALIGN uint16_t rr;
+    CACHE_ALIGN uint16_t cc;
     
-    color R, G, B;
+    CACHE_ALIGN color R, G, B;
     
-    huffman_start (nHeight & -16, nWidth & -16);
+    //nHeight -= 16;
+    //nWidth  -= 16;
+    
+    huffman_start (nHeight, nWidth);
     
     
     if (1) for (unsigned int nY = 0; nY < nHeight - 15; nY += 16)
@@ -1077,11 +1072,11 @@ bool jpeg::CompressImage ()
                             R = RGB16x16[rr][cc].nR;
                             G = RGB16x16[rr][cc].nG;
                             B = RGB16x16[rr][cc].nB;
-
-                            printf ("Pixel: (%d, %d) R:[%u], G:[%u], B:[%u]\n\n", rr, cc, RGB16x16[rr][cc].nR, RGB16x16[rr][cc].nG, RGB16x16[rr][cc].nB);
                             
                             // converting RGB into Y (luminance)
-                            Y8x8[nCounti][nCountj][nCountr][nCountc] = (RGB2Y(R, G, B)-128);
+                            Y8x8[nCounti][nCountj][nCountr][nCountc] = RGB2Y(R, G, B)-128;
+
+                            ///printf ("Pixel: (%d, %d) R:[%u], G:[%u], B:[%u] Y:[%u]\n\n", nX + rr, nY + cc, RGB16x16[rr][cc].nR, RGB16x16[rr][cc].nG, RGB16x16[rr][cc].nB, Y8x8[nCounti][nCountj][nCountr][nCountc] + 128);
                         }
                 }
             
@@ -1101,6 +1096,7 @@ bool jpeg::CompressImage ()
             // 4 Y-compression
             dct(Y8x8[1][1], Y8x8[1][1]);
             huffman_encode(HUFFMAN_CTX_Y, (int16_t*)Y8x8[1][1]);
+            
             // Cb-compression
             dct(Cb8x8, Cb8x8);
             huffman_encode(HUFFMAN_CTX_Cb, (int16_t*)Cb8x8);

@@ -56,10 +56,10 @@ typedef uint8_t color;
     } BGR;
     
     typedef struct {
-        uint8_t Blue:5;
-        uint8_t Green:5;
-        uint8_t Red:5;
-        uint8_t Reserved:1;
+        uint16_t Blue:5;
+        uint16_t Green:5;
+        uint16_t Red:5;
+        uint16_t Reserved:1;
     } BGR16;
     
     //---------------- J P E G ---------------
@@ -88,7 +88,7 @@ typedef uint8_t color;
     
     extern huffman_t huffman_ctx[3];
     
-#define    HUFFMAN_CTX_Y    &huffman_ctx[0]
+#define    HUFFMAN_CTX_Y     &huffman_ctx[0]
 #define    HUFFMAN_CTX_Cb    &huffman_ctx[1]
 #define    HUFFMAN_CTX_Cr    &huffman_ctx[2]
     

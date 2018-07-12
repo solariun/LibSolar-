@@ -419,11 +419,11 @@ void Graphic::GetPixel (int nX, int nY, Color& color)
 {
     Verify (ColorBuffer != NULL, "No Buffer initialized at this time", 1, GraphicException);
     
-    static Color tmpColor = { 0 };
+    //static Color tmpColor = { 0 };
     
-    if (nX < 0 || nY < 0 || nX >= (nImageWidth) || nY >= (nImageHeight))
+    if (nX < 0 || nY < 0 || nX > (nImageWidth) || nY > (nImageHeight))
     {
-        color =  tmpColor;
+        color =  (Color) ColorBuffer [(size_t) (nImageWidth * nImageHeight) - 1];;
     }
     else
     {
@@ -487,7 +487,7 @@ int Graphic::PSet (int nX, int nY, int nAlpha, Color stColor)
 	
     size_t nOffset = (size_t) ((nY * nImageWidth) + nX);
     
-    Verify(nOffset >= nAlpha, "Out of bound", 100, GraphicException);
+    VERIFY(nOffset >= nAlpha, "Out of bound", false);
     
     ColorBuffer [nOffset] = stColor;
 	
