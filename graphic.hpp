@@ -12,7 +12,9 @@
 #define GRAPHIC_H
 
 #include "Exception.hpp"
-#include "Util.h"
+#include "Util.hpp"
+
+#include <cstring>
 
 #ifndef PI
 #define PI 3.14159265358979323846
@@ -44,7 +46,7 @@
 
 typedef union
 {
-    uint32_t nRGB;
+    uint32_t nRGB; 
     struct
     {
         uint8_t  nAlpha;

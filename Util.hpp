@@ -41,6 +41,7 @@
 #include <string>
 #include <sys/stat.h>
 #include <vector>
+#include <cstring>
 
 using namespace std;
 //#include "MetaException.hpp"
