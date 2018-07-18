@@ -7,21 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6755362620FE1862004DC94A /* jpge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6755362420FE1861004DC94A /* jpge.cpp */; };
+		6755362720FE1862004DC94A /* jpge.h in Headers */ = {isa = PBXBuildFile; fileRef = 6755362520FE1862004DC94A /* jpge.h */; };
 		67607B542069322100578F21 /* Util.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 67607B502069322100578F21 /* Util.hpp */; };
 		67607B562069322100578F21 /* Util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67607B522069322100578F21 /* Util.cpp */; };
 		6775E4AA20D1E46200A8C1B1 /* Exception.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 6775E4A820D1E46200A8C1B1 /* Exception.hpp */; };
 		6775E4AB20D1E46200A8C1B1 /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6775E4A920D1E46200A8C1B1 /* Exception.cpp */; };
 		67D28BE62069408E006B5924 /* iniplus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67D28BE42069408E006B5924 /* iniplus.cpp */; };
 		67D28BE72069408E006B5924 /* iniplus.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 67D28BE52069408E006B5924 /* iniplus.hpp */; };
-		67ECD07C20EC01A10009FE0F /* jpeg.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 67ECD07420EC01A00009FE0F /* jpeg.hpp */; };
 		67ECD07D20EC01A10009FE0F /* lzh.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 67ECD07520EC01A00009FE0F /* lzh.hpp */; };
 		67ECD07F20EC01A10009FE0F /* lzh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67ECD07720EC01A00009FE0F /* lzh.cpp */; };
 		67ECD08020EC01A10009FE0F /* graphic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67ECD07820EC01A00009FE0F /* graphic.cpp */; };
 		67ECD08120EC01A10009FE0F /* graphic.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 67ECD07920EC01A00009FE0F /* graphic.hpp */; };
-		67ECD08420EC04D70009FE0F /* jpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67ECD08320EC04D70009FE0F /* jpeg.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6755362420FE1861004DC94A /* jpge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jpge.cpp; sourceTree = "<group>"; };
+		6755362520FE1862004DC94A /* jpge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jpge.h; sourceTree = "<group>"; };
 		67607B492069310C00578F21 /* libLibSolar++.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libLibSolar++.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		67607B502069322100578F21 /* Util.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Util.hpp; sourceTree = "<group>"; };
 		67607B522069322100578F21 /* Util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Util.cpp; sourceTree = "<group>"; };
@@ -31,12 +33,10 @@
 		6795E602206C20030043F7EE /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		67D28BE42069408E006B5924 /* iniplus.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = iniplus.cpp; sourceTree = "<group>"; };
 		67D28BE52069408E006B5924 /* iniplus.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = iniplus.hpp; sourceTree = "<group>"; };
-		67ECD07420EC01A00009FE0F /* jpeg.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = jpeg.hpp; sourceTree = "<group>"; };
 		67ECD07520EC01A00009FE0F /* lzh.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = lzh.hpp; sourceTree = "<group>"; };
 		67ECD07720EC01A00009FE0F /* lzh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lzh.cpp; sourceTree = "<group>"; };
 		67ECD07820EC01A00009FE0F /* graphic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = graphic.cpp; sourceTree = "<group>"; };
 		67ECD07920EC01A00009FE0F /* graphic.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = graphic.hpp; sourceTree = "<group>"; };
-		67ECD08320EC04D70009FE0F /* jpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jpeg.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,10 +53,10 @@
 		67607B402069310C00578F21 = {
 			isa = PBXGroup;
 			children = (
-				67ECD08320EC04D70009FE0F /* jpeg.cpp */,
+				6755362420FE1861004DC94A /* jpge.cpp */,
+				6755362520FE1862004DC94A /* jpge.h */,
 				67ECD07820EC01A00009FE0F /* graphic.cpp */,
 				67ECD07920EC01A00009FE0F /* graphic.hpp */,
-				67ECD07420EC01A00009FE0F /* jpeg.hpp */,
 				67ECD07720EC01A00009FE0F /* lzh.cpp */,
 				67ECD07520EC01A00009FE0F /* lzh.hpp */,
 				6775E4A920D1E46200A8C1B1 /* Exception.cpp */,
@@ -86,10 +86,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67ECD07C20EC01A10009FE0F /* jpeg.hpp in Headers */,
 				67607B542069322100578F21 /* Util.hpp in Headers */,
 				67ECD08120EC01A10009FE0F /* graphic.hpp in Headers */,
 				67ECD07D20EC01A10009FE0F /* lzh.hpp in Headers */,
+				6755362720FE1862004DC94A /* jpge.h in Headers */,
 				6775E4AA20D1E46200A8C1B1 /* Exception.hpp in Headers */,
 				67D28BE72069408E006B5924 /* iniplus.hpp in Headers */,
 			);
@@ -157,7 +157,7 @@
 				6775E4AB20D1E46200A8C1B1 /* Exception.cpp in Sources */,
 				67ECD08020EC01A10009FE0F /* graphic.cpp in Sources */,
 				67D28BE62069408E006B5924 /* iniplus.cpp in Sources */,
-				67ECD08420EC04D70009FE0F /* jpeg.cpp in Sources */,
+				6755362620FE1862004DC94A /* jpge.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -36,7 +36,7 @@
 
 #define ON_OFF_PIXELS	3.0
 
-#define ABS(i) i<0?-(i):i 
+#define ABS(i) i<0?(i*(-1)):i
 
 /*
  Define a structure of a Color
@@ -47,10 +47,10 @@ typedef union
     uint32_t nRGB;
     struct
     {
-        uint8_t  nR;
-        uint8_t  nG;
-        uint8_t  nB;
         uint8_t  nAlpha;
+        uint8_t  nB;
+        uint8_t  nG;
+        uint8_t  nR;
     };
 } Color;
 
@@ -94,15 +94,15 @@ protected:
 
 private:
     
-    uint32_t nArrayLen;
+    uint32_t nArrayLen = 0;
 
-	uint32_t nGlobalX, nGlobalY;
+	uint32_t nGlobalX = 0, nGlobalY = 0;
 	
     Color* ColorBuffer;
 	
-    uint32_t nGlobalAngle;
+    uint32_t nGlobalAngle = 0;
     
-	uint32_t nImageWidth, nImageHeight;
+	uint32_t nImageWidth = 0, nImageHeight = 0;
 	
 	
 	double Cos(double Degrees);
@@ -158,6 +158,8 @@ public:
 	int DrawXPM (int nPX, int nPY, int nLX, int nLY, int nWidth, int nHeight, int nAlpha, const char* ppszData[]);
 	unsigned char Get8bitsColor(int nX, int nY);
 
+    uint8_t* getRGBBuffer();
+    
 	//Creating procedures
 	
 	Graphic (uint32_t nWidth, uint32_t nHeight);

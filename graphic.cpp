@@ -99,7 +99,7 @@ Graphic::Graphic (uint32_t nWidth, uint32_t nHeight)
 
 Graphic::~Graphic ()
 {
-	free (ColorBuffer);
+	delete [] ColorBuffer;
 }
 
 
@@ -465,6 +465,9 @@ int Graphic::PutPixel (int nX, int nY, Color stColor)
 
 int Graphic::PSet (int nX, int nY, int nAlpha, Color stColor)
 {
+    
+    ////_LOG << "Adding at " << nX << "," << nY << "," << nAlpha << ", nAngle: [" << nGlobalAngle << endl;
+    
     if (nGlobalAngle > 0) 
 	{ 
 		if (1) 
@@ -475,19 +478,16 @@ int Graphic::PSet (int nX, int nY, int nAlpha, Color stColor)
 		
 	}
 
-	//TRACE ("Setting R:[%-2u] G:[%-2u] B:[%-2u] A:[%-2u]\n", stColor.nR, stColor.nG, stColor.nB, stColor.nAlpha);
-
-	if (nX < 0 || nY < 0 || nX >= (nImageWidth) || nY >= (nImageHeight)) 
+	if (nX < 0 || nY < 0 || nX >= (nImageWidth) || nY >= (nImageHeight))
 		return true;
-	
+
+
     if (nAlpha > 0)
     {
         stColor = GetAlphaPixel (nX, nY, stColor, nAlpha);
     }
 	
     size_t nOffset = (size_t) ((nY * nImageWidth) + nX);
-    
-    VERIFY(nOffset >= nAlpha, "Out of bound", false);
     
     ColorBuffer [nOffset] = stColor;
 	
@@ -498,6 +498,9 @@ int Graphic::PSet (int nX, int nY, int nAlpha, Color stColor)
 
 int Graphic::PutPixel (int nX, int nY, int nAlpha, Color stColor)
 {
+    //_LOG << "Adding at " << nX << "," << nY << "," << nAlpha << endl;
+    
+    
 	if (ColorBuffer == NULL) return -1;
 		
 	if (nGlobalAngle > 0)
@@ -1919,6 +1922,9 @@ int Graphic::DrawBox (int x, int y, int x2, int y2, int nAlpha, Color stColor)
 
 int Graphic::DrawFillBox (int x, int y, int x2, int y2, int nAlpha, Color stColor)
 {
+    
+    //_LOG << "Adding at " << x << "," << y << "," << x2 << "," << y2 << endl;
+    
     int row, col;
     
     
@@ -2013,6 +2019,23 @@ unsigned char Graphic::Get8bitsColor(int nX, int nY)
 	 //TRACE ("For nX: [%-4d], nY:[%-4d] Color: R:%-2u G:%-2u B:%-2u: Color: [%u]\n", nX, nY, stColor.nR, stColor.nG, stColor.nB, best_match);
 		   
 	return best_match;
+}
+
+uint8_t* Graphic::getRGBBuffer()
+{
+    size_t  nBufferLen = sizeof (uint8_t) *((nImageWidth * nImageHeight) * 3);
+    uint8_t* pBuffer  =  new uint8_t [sizeof (uint8_t) * nBufferLen];
+    
+    for (size_t nCount=0, nBufferOffset=0; nCount < (nImageHeight*nImageWidth); nCount++, nBufferOffset += 3)
+    {
+        pBuffer [nBufferOffset] = ColorBuffer [nCount].nR;
+        pBuffer [nBufferOffset+1] = ColorBuffer [nCount].nG;
+        pBuffer [nBufferOffset+2] = ColorBuffer [nCount].nB;
+        
+        //_LOG << "nCount: [" << nCount << "], nBufferOffset:[" << nBufferOffset << "], nR:[" << (int) ColorBuffer [nCount].nR <<  "], nG:[" << (int) ColorBuffer [nCount].nG << "], B:[" << (int) ColorBuffer [nCount].nB << "]" << endl;
+    }
+    
+    return pBuffer;
 }
 
 Graphic::Graphic()

@@ -180,7 +180,7 @@ uint Util::getCSVlikeParser (const std::string& strData, const char* pszTokens, 
             if (isBetween(chChar, pszTokens, nTokenSize))
             {
                 listContainer.push_back (strWork);
-                TRACE << "Adding line: [" << strWork << "]" << std::endl;
+                //TRACE << "Adding line: [" << strWork << "]" << std::endl;
                 
                 nCount++;
                 
@@ -226,7 +226,7 @@ uint Util::getCSVlikeParser (const std::string& strData, const char* pszTokens, 
     if (strWork.length() > 0)
     {
         listContainer.push_back (strWork);
-        TRACE << "LAST: Adding line: [" << strWork << "]" << std::endl;
+        //TRACE << "LAST: Adding line: [" << strWork << "]" << std::endl;
         nCount++;
     }
     
