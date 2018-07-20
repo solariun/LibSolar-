@@ -113,8 +113,6 @@ bool Util::isBetween (char chChar, const char* pszCharList, int32_t nMaxCharList
         nMaxCharList--;
     };
     
-    //std::cout << "Returning at: " << nMaxCharList << std::endl;
-    
     return nMaxCharList < 0 ? false : true;
 }
 
@@ -319,7 +317,7 @@ const vector<std::string> Util:: getFields (const std::string& strData, const st
         while ((chValue = *pszData++) != '\0')
         {
             
-            //cerr << "strTemp: [" << strTempData << "], chValue: [" << chValue << "], chToken: [" << chToken << "," << ((int) chToken) << "], bookLookup: [" << boolTKLookup << "], boolPush: [" << boolPushChar << "]" << endl;
+            //cerr << "strTemp: [" << strTempData << "], chValue: [" << chValue << "], chToken: [" << pszToken << "," << ((int) chToken) << "], bookLookup: [" << boolTKLookup << "], boolPush: [" << boolPushChar << "]" << endl;
             
             if(boolPushChar == false)
             {
@@ -350,7 +348,7 @@ const vector<std::string> Util:: getFields (const std::string& strData, const st
                 }
                 else
                 {
-                    if (boolIsBetween && chToken == chValue)
+                    if (boolIsBetween && (chToken == chValue || chToken == 0))
                     {
                         vecData.push_back(strTempData);
                         strTempData = "";

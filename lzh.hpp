@@ -1,6 +1,6 @@
 /* LZH.H */
 
-#include <Util.h>
+#include <Util.hpp>
 #include <stdint.h>
 #include <unistd.h>
 
