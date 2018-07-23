@@ -87,7 +87,7 @@ const string Exception::getExtendedErrorHeader (const char* pszClass, int nLine,
 
 Exception::Exception(std::string strType, std::string strMessage, uint nErrorID) : strType (strType), strExText(strMessage), nExID(nErrorID)
 {
-    CLASSLOG << "Message: " << strExText << endl;
+    _LOG << strType << "Exception Message: " << strExText << endl;
 }
 
 

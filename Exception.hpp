@@ -60,6 +60,7 @@
 #include <string>
 #include <typeinfo>
 
+
 using namespace std;
 
 #define CLASSLOG cerr << ClassErrorHeader() << ":"
@@ -76,15 +77,6 @@ using namespace std;
 #define STRINGFY_(x) #x
 #define STRINGFY__(x) STRINGFY_(x)
 #define STRINGFY(x)STRINGFY__(x)
-
-#define NOTRACE
-
-#define TRACE if (getDebugState() == true) std::cerr
-
-
-void setDebug(bool nState);
-
-bool getDebugState();
 
 typedef unsigned int uint;
 

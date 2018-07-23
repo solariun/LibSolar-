@@ -43,14 +43,19 @@
 #include <vector>
 #include <cstring>
 
+#include "Exception.hpp"
+
 using namespace std;
 //#include "MetaException.hpp"
 
-#define TRACE if (getDebugState() == true) std::cerr
+#define NOTRACE /* DISABLES CODE */ true ? cerr : _LOG
+
+#define TRACE if (getDebugState() == true) _LOG
 
 void setDebug(bool nState);
 
 bool getDebugState();
+
 
 
 namespace Util
