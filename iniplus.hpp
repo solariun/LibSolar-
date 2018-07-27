@@ -28,18 +28,18 @@ using namespace std;
 
 enum iniElements_t
 {
-    none_tag,
-    struct_tag,
-    open_struct_tag,
-    close_struct_tag,
-    attributive_tag,
-    string_line_tag,
-    string_quote_tag,
-    value_tag,
-    string_tag,
-    session_tag,
-    open_session_tag,
-    close_session_tag
+    none_tag,           // 0
+    struct_tag,         // 1
+    open_struct_tag,    // 2
+    close_struct_tag,   // 3
+    attributive_tag,    // 4
+    string_line_tag,    // 5
+    string_quote_tag,   // 6
+    value_tag,          // 7
+    string_tag,         // 8
+    session_tag,        // 9
+    open_session_tag,   // 10
+    close_session_tag   // 11
 };
 
 
@@ -113,7 +113,7 @@ public:
     iniplus (const char* pszINIFileName);
     
     void getStringFromRef (string& strRet, const char* pszINIPath);
-    string getString (const char* pszINIPath);
+    string getRawString (const char* pszINIPath);
   
     bool Exists (const char* pszINIPath);
     
@@ -129,6 +129,9 @@ public:
     
     float getfloat (const char* pszINIPath);
     double getDouble (const char* pszINIPath);
+    
+    string getString(const char* pszINIPath, map<string, string>* pVarMap = nullptr);
+    
 };
 
 

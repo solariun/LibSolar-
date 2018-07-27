@@ -12,7 +12,7 @@
 #include <new>
 #include <sstream>
 #include <stdlib.h>
-
+#include <cctype>
 
 iniplusException::iniplusException (std::string strMessage, uint nErrorID): Exception ("iniplus", strMessage, nErrorID)
 {}
@@ -63,12 +63,12 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
     
     if (strPath.length() > 0)
     {
-        CLASSLOG << "Entering level (" << nDepth << ") [" << strPath << "]" << endl;
+        NOTRACE << "Entering level (" << nDepth << ") [" << strPath << "]" << endl;
     }
     
     while (getNextLexicalItem(lexItem) != NULL)
     {
-        CLASSLOG << "strPath: [" << strPath.length() << "] Received Lex Item: (" << lexItem.nType << ") [" << lexItem.strValue << "]" << endl;
+        NOTRACE  << ">>>>> PARSER <<<<< :" << "strPath: [" << strPath.length() << "] Received Lex Item: (" << lexItem.nType << ") [" << lexItem.strValue << "]" << endl;
         
         if (lexItem.nType == session_tag)
         {
@@ -85,8 +85,8 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
                 }
                 else if (lexItem.nType == close_struct_tag)
                 {
-                    CLASSLOG << "---------------------------------" << endl;
-                    CLASSLOG << "Leving Level " << nDepth << "..." << endl << endl;
+                    NOTRACE << "---------------------------------" << endl;
+                    NOTRACE << "Leving Level " << nDepth << "..." << endl << endl;
 
                     return;
                 }
@@ -101,7 +101,7 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
                     
                     mapIniData.insert (pair<string, string> (strPath + "." + strAttribute, lexItem.strValue));
                     
-                    CLASSLOG << "Adding: [" << strPath << "." << strAttribute << "] = [" << lexItem.strValue << "]" << endl;
+                    NOTRACE << "Adding: [" << strPath << "." << strAttribute << "] = [" << lexItem.strValue << "]" << endl;
                     
                     nType = none_tag;
                 }
@@ -109,7 +109,7 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
                 {
                     parseINI(strPath + "." + strAttribute, nDepth + 1);
                     
-                    //CLASSLOG << "Returned to: [" << strPath << "]" << endl;
+                    NOTRACE << "Returned to: [" << strPath << "]" << endl;
                     nType = none_tag;
                 }
             }
@@ -121,6 +121,10 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
     }
 }
 
+inline bool isAlphaData (char chChar)
+{
+    return (isdigit (chChar) || isalpha(chChar) || Util::isBetween(chChar, "_-\\", 3));
+}
 
 iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserItem)
 {
@@ -135,16 +139,13 @@ iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserItem)
     bool    boolOverload = false;
     bool    boolDiscartComment = false;
     
-    static regex regexDigits ("[[:graph:]]");
-    static regex regexAlphaName ("[0-9A-Za-z_\\-]");
-    
     
     while (isIn->good())
     {
         chChar = isIn->get();
         stzTemp [0] = chChar; //securely stringfing chChar...
         
-        //CLASSLOG << chChar << " tp: " << nType << " : String: [" << strData << "]" <<  " EOF: " << isIn->eof () << endl;
+        NOTRACE  "boolString: [" << boolString << "], " << chChar << "(" << static_cast<int>(chChar) << ") tp: " << nType << " : String: [" << strData << "]" <<  " EOF: " << isIn->eof () << endl;
         
         
         if (boolDiscartComment == true)
@@ -155,13 +156,13 @@ iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserItem)
                 isIn->putback(chChar);
             }
             
-            CLASSLOG << chChar;
+            NOTRACE << chChar;
         }
         else if (nType != string_quote_tag && chChar == '#')
         {
             boolDiscartComment = true;
             
-            CLASSLOG << "Starting Discarting..." << endl;
+            NOTRACE << "Starting Discarting..." << endl;
         }
         else if (nType == none_tag)
         {
@@ -196,7 +197,7 @@ iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserItem)
                 
                 return &iniParserItem;
             }
-            else if (regex_match (stzTemp, regexAlphaName) == true)
+            else if (isAlphaData(chChar) == true)
             {
                 if (chChar == '"')
                     nType = string_quote_tag;
@@ -215,7 +216,7 @@ iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserItem)
                 nType = string_quote_tag;
                 boolString = true;
             }
-            else if (regex_match (stzTemp, regexDigits) == true)
+            else if (isgraph (chChar) != 0)
             {
                 nType = string_line_tag;
                 
@@ -224,7 +225,7 @@ iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserItem)
                 boolString = true;
             }
         }
-        else if (nType == string_tag && regex_match (stzTemp, regexAlphaName) == false)
+        else if (nType == string_tag && (! isAlphaData (chChar)))
         {
             nType = none_tag;
             
@@ -232,7 +233,7 @@ iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserItem)
             
             return &iniParserItem;
         }
-        else if (nType == string_quote_tag && boolOverload == false)
+        else if (nType == string_quote_tag && boolOverload == false && Util::isBetween(chChar, "\"\\", 2))
         {
             if(chChar == '\\')
             {
@@ -268,7 +269,7 @@ iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserItem)
         }
         else if (boolString == true)
         {
-            if (chChar == '\t' || chChar >= ' ') strData += chChar;
+            if (nType == string_quote_tag || chChar == '\t' || chChar >= ' ') strData += chChar;
             
             boolOverload = false;
         }
@@ -304,10 +305,10 @@ bool iniplus::Exists (const char* pszINIPath)
 
 void iniplus::getStringFromRef (string& strRet, const char* pszINIPath)
 {
-    strRet = getString(pszINIPath);
+    strRet = getRawString(pszINIPath);
 }
 
-string iniplus::getString (const char* pszINIPath)
+string iniplus::getRawString (const char* pszINIPath)
 {
     map<string,string>::iterator mapPos;
     
@@ -319,9 +320,10 @@ string iniplus::getString (const char* pszINIPath)
 }
 
 
+
 int iniplus::getInteger (const char* pszINIPath)
 {
-    return std::stoi (((const string) getString (pszINIPath)), nullptr, 0);
+    return std::stoi (((const string) getRawString (pszINIPath)), nullptr, 0);
 }
 
 
@@ -336,40 +338,78 @@ int iniplus::getInteger (const char* pszINIPath)
 
 long  iniplus::getLong (const char* pszINIPath)
 {
-    return std::stol ((const string)getString (pszINIPath), nullptr, 0);
+    return std::stol ((const string)getRawString (pszINIPath), nullptr, 0);
 }
 
 long long iniplus::getLongLong (const char* pszINIPath)
 {
-    return std::stoll ((const string)getString (pszINIPath), nullptr, 0);
+    return std::stoll ((const string)getRawString (pszINIPath), nullptr, 0);
 }
 
 long long iniplus::getULongLongFromBinary (const char* pszINIPath)
 {
-    return std::stoll ((const string)getString (pszINIPath), nullptr, 2);
+    return std::stoll ((const string)getRawString (pszINIPath), nullptr, 2);
 }
 
 
 long  iniplus::getULong (const char* pszINIPath)
 {
-    return std::stoul ((const string)getString (pszINIPath));
+    return std::stoul ((const string)getRawString (pszINIPath));
 }
 
 long long iniplus::getULongLong (const char* pszINIPath)
 {
-    return std::stoull ((const string)getString (pszINIPath));
+    return std::stoull ((const string)getRawString (pszINIPath));
 }
 
 
 float iniplus::getfloat (const char* pszINIPath)
 {
-     return std::stof ((const string)getString (pszINIPath));
+     return std::stof ((const string)getRawString (pszINIPath));
 }
  
 double iniplus::getDouble (const char* pszINIPath)
 {
-     return std::stof ((const string)getString (pszINIPath));
+     return std::stof ((const string)getRawString (pszINIPath));
 }
+
+std::string iniplus::getString(const char *pszINIPath, map<std::string, std::string> *pVarMap)
+{
+    string strValueof = getRawString(pszINIPath);
+    string strVariableName;
+    string strReplace;
+    size_t nStart, nStop;
+
+    
+    while ((nStart= strValueof.find("${", 0)) !=  string::npos)
+    {
+        NOTRACE << endl << endl << "Value: [" << strValueof << "]" << endl;
+
+        if ((nStop = strValueof.find("}", 0)) != string::npos)
+        {
+            strVariableName = strValueof.substr (nStart+2, (nStop - nStart) - 2);
+            strReplace = "";
+
+            
+            if (Exists(strVariableName.c_str()))
+            {
+                strReplace = getRawString(strVariableName.c_str());
+            }
+            else if (pVarMap != nullptr && pVarMap->find(strVariableName) != pVarMap->end())
+            {
+                strReplace = (*pVarMap)[strVariableName];
+            }
+            
+            NOTRACE << "Found nStart: (" << nStart << "), nStop: (" << nStop << "), Variable: [" << strVariableName << "] = [" << strReplace << "]" << endl;
+            strValueof.replace(nStart, (nStop-nStart)+1, strReplace);
+        }
+    }
+    
+    NOTRACE "String: [" << strValueof << "]" << endl;
+    
+    return strValueof;
+}
+
 
 
 //protocolo correios 2931802247702
