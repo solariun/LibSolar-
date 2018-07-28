@@ -127,12 +127,20 @@ long Util::getFileSize(std::string filename)
 }
 
 
-std::string& Util::strToUpper (std::string& strData)
+const std::string Util::strToUpper (std::string strData)
 {
-    for (auto& c : strData) toupper(c);
+    for (char& c : strData) c = toupper(c);
     
     return strData;
 }
+
+const std::string Util::strToLower (std::string strData)
+{
+    for (char& c : strData) c = tolower(c);
+    
+    return strData;
+}
+
 
 /*
  * CSV style parser, it will parser
@@ -393,4 +401,20 @@ void Util::PrintStandardTypeSizes()
     printf ("double            : %ld\n", sizeof (double)*8);
     printf ("float             : %ld\n", sizeof (float)*8);
     printf ("long double       : %ld\n", sizeof (long double)*8);
+}
+
+
+const char* Util::ToUpper (char* strData, uint nDataLen)
+{
+    while (nDataLen > 0) strData [nDataLen-1] = toupper(strData [nDataLen-1]);
+    
+    return strData;
+}
+
+
+const char* Util::ToLower (char* strData, uint nDataLen)
+{
+    while (nDataLen > 0) strData [nDataLen-1] = tolower (strData [nDataLen-1]);
+    
+    return strData;
 }

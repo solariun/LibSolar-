@@ -18,14 +18,14 @@ iniplusException::iniplusException (std::string strMessage, uint nErrorID): Exce
 {}
 
 
-iniplus::iniplus (const char* pszINIFileName) : strFileName(pszINIFileName)
+iniplus::iniplus (const string strINIFileName) : strFileName(strINIFileName)
 {
     
     ifstream* ifsFile;
     
-    Verify(Util::getFileSize(pszINIFileName) > 0, "Errro, file is zero or does not exist.", EXCEPT_INI_FILE_DOSENT_EXIST_OR_ZERO, iniplusException);
+    Verify(Util::getFileSize(strINIFileName) > 0, "Errro, file is zero or does not exist.", EXCEPT_INI_FILE_DOSENT_EXIST_OR_ZERO, iniplusException);
     
-    ifsFile = new ifstream (pszINIFileName);
+    ifsFile = new ifstream (strINIFileName);
     //int errn = errno;
     
     Verify((ifsFile->rdstate() & std::ifstream::failbit) == 0, "File could not be read.", EXCEPT_INI_FILE_NOT_READ, iniplusException);
@@ -58,6 +58,7 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
     
     string strValue = "";
     string strAttribute = "";
+    string strTempValue = "";
     
     uint nType = none_tag;
     
@@ -99,7 +100,9 @@ void iniplus::parseINI (string strPath, uint32_t nDepth)
                 {
                     Verify (getNextLexicalItem(lexItem) != NULL && lexItem.nType == string_tag, "Syntatic Error, no correct value given", EXCEPT_INI_SYNT_ERROR_INVALID_VALUE, iniplusException);
                     
-                    mapIniData.insert (pair<string, string> (strPath + "." + strAttribute, lexItem.strValue));
+                    strTempValue = strPath + "." + strAttribute;
+                    
+                    mapIniData.insert (pair<string, string> (Util::strToUpper(strTempValue), lexItem.strValue));
                     
                     NOTRACE << "Adding: [" << strPath << "." << strAttribute << "] = [" << lexItem.strValue << "]" << endl;
                     
@@ -292,9 +295,9 @@ iniParserItemRet* iniplus::getNextLexicalItem (iniParserItemRet& iniParserItem)
 /*
  * Check if exists any inipath;
  */
-bool iniplus::Exists (const char* pszINIPath)
+bool iniplus::Exists (const string strINIPath)
 {
-    return mapIniData.find(pszINIPath) != mapIniData.end() ? true : false;
+    return mapIniData.find(Util::strToUpper (strINIPath)) != mapIniData.end() ? true : false;
 }
 
 
@@ -303,27 +306,39 @@ bool iniplus::Exists (const char* pszINIPath)
  * Conversion types lookup functions functions 
  */
 
-void iniplus::getStringFromRef (string& strRet, const char* pszINIPath)
+void iniplus::getStringFromRef (string& strRet, const string strINIPath)
 {
-    strRet = getRawString(pszINIPath);
+    strRet = getRawString(strINIPath);
 }
 
-string iniplus::getRawString (const char* pszINIPath)
+/*
+    getRawString
+ 
+    This funciton will return the same data available at the INI without interpreting
+    any value at all....
+ 
+*/
+string iniplus::getRawString (const string strINIPath)
 {
+    
     map<string,string>::iterator mapPos;
     
-    mapPos = mapIniData.find(pszINIPath);
+    string strValue = strINIPath;
     
-    Verify (mapPos != mapIniData.end(), "Error, element not found.", EXCEPT_INI_NO_INIPATH_FOUND, iniplusException);
+    mapPos = mapIniData.find( Util::strToUpper(strValue).c_str());
+    
+    NOTRACE << "Looking for: [" << Util::strToUpper(strValue) << "]" << endl << endl;
+    
+    Verify (mapPos != mapIniData.end(), "Error, element (" + Util::strToUpper(strValue) + ") was not found.", EXCEPT_INI_NO_INIPATH_FOUND, iniplusException);
     
     return mapPos->second;
 }
 
 
 
-int iniplus::getInteger (const char* pszINIPath)
+int iniplus::getInteger (const string strINIPath)
 {
-    return std::stoi (((const string) getRawString (pszINIPath)), nullptr, 0);
+    return std::stoi (((const string) getRawString (strINIPath)), nullptr, 0);
 }
 
 
@@ -336,46 +351,69 @@ int iniplus::getInteger (const char* pszINIPath)
  *  used for processing, thus, I decided against it.
  */
 
-long  iniplus::getLong (const char* pszINIPath)
+long  iniplus::getLong (const string strINIPath)
 {
-    return std::stol ((const string)getRawString (pszINIPath), nullptr, 0);
+    return std::stol ((const string)getRawString (strINIPath), nullptr, 0);
 }
 
-long long iniplus::getLongLong (const char* pszINIPath)
+long long iniplus::getLongLong (const string strINIPath)
 {
-    return std::stoll ((const string)getRawString (pszINIPath), nullptr, 0);
+    return std::stoll (getRawString (strINIPath).c_str(), nullptr, 0);
 }
 
-long long iniplus::getULongLongFromBinary (const char* pszINIPath)
+long long iniplus::getULongLongFromBinary (const string strINIPath)
 {
-    return std::stoll ((const string)getRawString (pszINIPath), nullptr, 2);
-}
-
-
-long  iniplus::getULong (const char* pszINIPath)
-{
-    return std::stoul ((const string)getRawString (pszINIPath));
-}
-
-long long iniplus::getULongLong (const char* pszINIPath)
-{
-    return std::stoull ((const string)getRawString (pszINIPath));
+    return std::stoll (getRawString (strINIPath).c_str(), nullptr, 2);
 }
 
 
-float iniplus::getfloat (const char* pszINIPath)
+long  iniplus::getULong (const string strINIPath)
 {
-     return std::stof ((const string)getRawString (pszINIPath));
+    return std::stoul (getRawString (strINIPath).c_str());
+}
+
+long long iniplus::getULongLong (const string strINIPath)
+{
+    return std::stoull (getRawString (strINIPath).c_str());
+}
+
+
+float iniplus::getfloat (const string strINIPath)
+{
+     return std::stof (getRawString (strINIPath).c_str());
 }
  
-double iniplus::getDouble (const char* pszINIPath)
+double iniplus::getDouble (const string strINIPath)
 {
-     return std::stof ((const string)getRawString (pszINIPath));
+     return std::stof (getRawString (strINIPath).c_str());
 }
 
-std::string iniplus::getString(const char *pszINIPath, map<std::string, std::string> *pVarMap)
+
+
+/*
+    getString
+ 
+    This is by far the most advanced capability from this lib, since
+    it can interpret 3 levels of information, replacing any ${look_up_date},
+    for one found on the 3 level of looking up data.
+ 
+    The looking up priority is as followed:
+ 
+ Dynamic:
+    1. pVarMap, by default it is null, but once providade, it can overide
+    a INI path while it is in use by the getString, no data will EVER change
+    the in memory data stored.
+ 
+ Statics:
+    2. The in memory iniPath data stored, provided by the INI read itself.
+ 
+    3. the Environment variables, is the lower orther and can be overide by both
+        iniPath and pVarMap.
+ 
+*/
+std::string iniplus::getString(string strINIPath, map<std::string, std::string> *pVarMap)
 {
-    string strValueof = getRawString(pszINIPath);
+    string strValueof = getRawString(strINIPath);
     string strVariableName;
     string strReplace;
     size_t nStart, nStop;
@@ -390,14 +428,17 @@ std::string iniplus::getString(const char *pszINIPath, map<std::string, std::str
             strVariableName = strValueof.substr (nStart+2, (nStop - nStart) - 2);
             strReplace = "";
 
-            
-            if (Exists(strVariableName.c_str()))
+            if (pVarMap != nullptr && pVarMap->find(strVariableName) != pVarMap->end())
+            {
+                strReplace = (*pVarMap)[strVariableName];
+            }
+            else if (Exists(strVariableName.c_str()))
             {
                 strReplace = getRawString(strVariableName.c_str());
             }
-            else if (pVarMap != nullptr && pVarMap->find(strVariableName) != pVarMap->end())
+            else if (getenv(strVariableName.c_str()) != nullptr)
             {
-                strReplace = (*pVarMap)[strVariableName];
+                strReplace = getenv(strVariableName.c_str());
             }
             
             NOTRACE << "Found nStart: (" << nStart << "), nStop: (" << nStop << "), Variable: [" << strVariableName << "] = [" << strReplace << "]" << endl;

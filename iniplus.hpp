@@ -57,6 +57,7 @@ enum iniElements_t
 
 #define EXCEPT_INI_NO_INIPATH_FOUND             210
 
+#define EXCEPT_INI_DATA_NULL                    300
 /*
  * Type used for returning the Lexical ITem
  */
@@ -110,27 +111,27 @@ private:
     
 public:
     
-    iniplus (const char* pszINIFileName);
+    iniplus (const string strINIFileName);
     
-    void getStringFromRef (string& strRet, const char* pszINIPath);
-    string getRawString (const char* pszINIPath);
+    void getStringFromRef (string& strRet, const string strINIPath);
+    string getRawString (const string strINIPath);
   
-    bool Exists (const char* pszINIPath);
+    bool Exists (const string strINIPath);
     
-    int  getInteger (const char* pszINIPath);
+    int  getInteger (const string strINIPath);
 
-    long  getULong (const char* pszINIPath);
-    long long getULongLong (const char* pszINIPath);
+    long  getULong (const string strINIPath);
+    long long getULongLong (const string strINIPath);
 
-    long long getULongLongFromBinary (const char* pszINIPath);
+    long long getULongLongFromBinary (const string strINIPath);
 
-    long  getLong (const char* pszINIPath);
-    long long getLongLong (const char* pszINIPath);
+    long  getLong (const string strINIPath);
+    long long getLongLong (const string strINIPath);
     
-    float getfloat (const char* pszINIPath);
-    double getDouble (const char* pszINIPath);
+    float getfloat (const string strINIPath);
+    double getDouble (const string strINIPath);
     
-    string getString(const char* pszINIPath, map<string, string>* pVarMap = nullptr);
+    string getString(const string strINIPath, map<string, string>* pVarMap = nullptr);
     
 };
 

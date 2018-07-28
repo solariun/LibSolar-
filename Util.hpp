@@ -76,8 +76,14 @@ namespace Util
 
     std::string trim_copy(std::string s);
 
-    std::string& strToUpper (std::string& strData);
+    const std::string strToUpper (std::string strData);
     
+    const std::string strToLower (std::string strData);
+
+    const char* ToUpper (char* strData, uint nDataLen);
+    
+    const char* ToLower (char* strData, uint nDataLen);
+
     uint getCSVlikeParser (const std::string& strData, const char* pszToken, uint nTokenSize, std::vector<std::string>& listContainer);
 
     const string getLogLikeTimeStamp ();
@@ -104,6 +110,9 @@ namespace Util
     const vector<std::string> getFields (const std::string& strData, const std::string strTokens);
     
     void PrintStandardTypeSizes();
+    
+   // void strToUpper (string& strData);
+    //void strToLower (string& strData);
 }
 
 
