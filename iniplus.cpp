@@ -441,9 +441,18 @@ std::string iniplus::getString(string strINIPath, map<std::string, std::string> 
                 strReplace = getenv(strVariableName.c_str());
             }
             
-            NOTRACE << "Found nStart: (" << nStart << "), nStop: (" << nStop << "), Variable: [" << strVariableName << "] = [" << strReplace << "]" << endl;
+            NOTRACE << "Found nStart: (" << nStart << "), nStop: (" << nStop << "), Variable: [" << strVariableName << "]" << endl;
+            
             strValueof.replace(nStart, (nStop-nStart)+1, strReplace);
+            
         }
+        else
+        {
+            strValueof.replace(nStart, 2, "--ERROR-->");
+        }
+
+        NOTRACE << "--------------------------" << endl << strValueof << endl << "---------------------------" << endl;
+
     }
     
     NOTRACE "String: [" << strValueof << "]" << endl;

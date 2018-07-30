@@ -103,7 +103,7 @@ std::string Util::trim_copy(std::string s)
     return s;
 }
 
-bool Util::isBetween (char chChar, const char* pszCharList, int32_t nMaxCharList=0)
+bool Util::isBetween (char chChar, const char* pszCharList, ssize_t nMaxCharList=0)
 {
     nMaxCharList = (int32_t)(nMaxCharList == 0 ? strlen(pszCharList) : nMaxCharList) - 1;
     
@@ -141,103 +141,6 @@ const std::string Util::strToLower (std::string strData)
     return strData;
 }
 
-
-/*
- * CSV style parser, it will parser
- * it will parser de data taking care of strings between ' " '
- *
- * it is based on vector to get things easier to parser for
- * developer, use resize to approvisionate space
- * it will only clear to no change the memory already allocated.
- */
-
-uint Util::getCSVlikeParser (const std::string& strData, const char* pszTokens, uint nTokenSize, std::vector<std::string>& listContainer)
-{
-    
-    listContainer.clear();
-    
-    std::string strWork = "";
-    
-    int typeText = 0;
-    bool boolOverload = false;
-    bool boolAddChar = false;
- 
-    boolAddChar = false;
-    
-    uint nCount=0;
-    
-    for (auto chChar : strData)
-    {
-        if (typeText == 0 && isBetween(chChar, pszTokens, nTokenSize) == false)
-        {
-            if (chChar == '\"')
-            {
-                typeText = 2;
-                continue;
-            }
-            else
-            {
-                typeText = 1;
-            }
-        }
-        
-        if (typeText == 1)
-        {
-            if (isBetween(chChar, pszTokens, nTokenSize))
-            {
-                listContainer.push_back (strWork);
-                //TRACE << "Adding line: [" << strWork << "]" << std::endl;
-                
-                nCount++;
-                
-                strWork = "";
-                typeText = 0;
-                
-                boolAddChar = false;
-            }
-            else if (boolAddChar == false)
-            {
-                boolAddChar = true;
-            }
-        }
-        else if (typeText == 2)
-        {
-            if (boolOverload == true)
-            {
-                strWork += chChar;
-                
-                boolOverload = true;
-            }
-            else if (chChar == '\\')
-            {
-                boolOverload = true;
-            }
-            else if (chChar == '"')
-            {
-                typeText = 1;
-                continue;
-            }
-            else
-            {
-                boolAddChar = true;
-            }
-        }
-        
-        if (boolAddChar == true)
-        {
-            strWork += chChar;
-        }
-    }
-    
-    if (strWork.length() > 0)
-    {
-        listContainer.push_back (strWork);
-        //TRACE << "LAST: Adding line: [" << strWork << "]" << std::endl;
-        nCount++;
-    }
-    
-    return nCount;
-}
 
 
 const string Util::getLogLikeTimeStamp ()
@@ -307,83 +210,132 @@ void  Util::PrintDataToDebug (uint8_t* szSectionData, long int nDataLen)
 
 
 
-const vector<std::string> Util:: getFields (const std::string& strData, const std::string strTokens)
+const vector<std::string>& Util:: getFields (const std::string& strOriData, const std::string strTokens, vector<std::string>& vecData,  bool boolAutoRTrim)
 {
-    vector<std::string> vecData;
     string strTempData;
-    const char* pszToken = strTokens.c_str();
+    vecData.clear();
     
-    if (strData.length() != 0)
+    if (strOriData.length() != 0 && strTokens.length() > 0)
     {
-        const char* pszData = strData.c_str();
-        char chValue = '\0';
-        char chToken = 0;
-        bool boolTKLookup = true;
-        bool boolPushChar = false;
-        bool boolIsBetween = false;
+        char chToken = strTokens[0];
         
-        while ((chValue = *pszData++) != '\0')
+        //This will make things faster
+        char szTokens [strTokens.length()+1];
+        strncpy(szTokens, strTokens.c_str(), strTokens.length());
+
+        
+        NOTRACE << "\n\n----------------------------------------------\n";
+        NOTRACE << "Starting processing line: [" << strOriData << "]" << endl;
+        
+        char chLookup = 0;
+        bool boolScapeChar = false;
+        bool boolLookup = false;
+
+        string strItem;
+        
+        for (const char& chItem : strOriData)
         {
+            NOTRACE << "Item: [" << chItem <<"], chLookup: [" << chLookup << "], boolLookup: (" << boolLookup << "), boolScapeChar:(" << boolScapeChar << ")" << endl;
+            NOTRACE << " >>>> Original: [" << strOriData << "]" << endl;
+            NOTRACE << " >>>> strItem:  [" << strItem << "]" << endl << endl;
             
-            //cerr << "strTemp: [" << strTempData << "], chValue: [" << chValue << "], chToken: [" << pszToken << "," << ((int) chToken) << "], bookLookup: [" << boolTKLookup << "], boolPush: [" << boolPushChar << "]" << endl;
-            
-            if(boolPushChar == false)
+            if (boolScapeChar == false)
             {
-                boolIsBetween = isBetween(chValue, pszToken);
-                    
-                if (boolTKLookup == true)
+                if (chLookup == 0)
                 {
-                    if (boolIsBetween == true)
+                    boolLookup = false;
+                    
+                    if (chToken == ' ' && ((boolAutoRTrim == true && isspace(chItem)) || chItem == chToken))
                     {
-                        if (chToken == ' ' && chToken == chValue)
-                            continue;
-                        
-                        chToken = chValue;
-                        
-                        if(*(pszData+1) != '\0')
-                        {
-                            boolTKLookup = false;
-                        }
-                        
+                        chLookup = ' ';
+                        continue;
+                    }
+                    else if (isBetween(chItem, szTokens, strTokens.length()) == true)
+                    {
+                        boolLookup = true;
+                        chLookup = chItem;
                         continue;
                     }
                     else
                     {
-                        pszData--; //To force push-back
-                        boolTKLookup = false;
-                        continue;
+                        boolLookup = true;
+                        chLookup = chToken;
                     }
                 }
                 else
                 {
-                    if (boolIsBetween && (chToken == chValue || chToken == 0))
+                    if (boolLookup == false && chToken == ' ')
                     {
-                        vecData.push_back(strTempData);
-                        strTempData = "";
-                        
-                        boolTKLookup = true;
-                        continue;
+                        if (boolAutoRTrim == true && isspace(chItem))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            boolLookup = true;
+                        }
                     }
-                    else if (chValue == '\\')
+                    else if (boolLookup == true)
                     {
-                        boolPushChar = true;
-                        continue;
+                        if (chItem == '\\')
+                        {
+                            boolScapeChar = true;
+                            continue;
+                        }
+                        else if (chLookup == chToken)
+                        {
+                            if (strTokens.length()>1 && isBetween(chItem, szTokens+1, strTokens.length()-1) == true)
+                            {
+                                boolLookup = true;
+                                chLookup = chItem;
+                                
+                                continue;
+                            }
+                            else if (chItem == chLookup)
+                            {
+                                NOTRACE << "ADDING: [" << strItem << "]" << endl;
+                                vecData.push_back(strItem);
+                                
+                                chLookup = 0;
+                                boolLookup = false;
+                                strItem = "";
+                                
+                                continue;
+                            }
+                        }
+                        else if (chItem == chLookup) //Delimiter handler
+                        {
+                            chLookup = chToken;
+                            continue;
+                        }
                     }
                 }
             }
             
-            if ((boolTKLookup == false || boolPushChar == true) && chValue != chToken)
+            if (boolScapeChar == true || chItem == '\t' || chItem >= ' ')
             {
-                if (boolPushChar == true) boolPushChar = false;
+                strItem += (boolScapeChar == true ?
+                            chItem == 'n' ? '\n' :
+                            chItem == 'r' ? '\r' :
+                            chItem == 't' ? 'r' : chItem
+                            : chItem);
                 
-                strTempData += chValue;
+                if (boolScapeChar == true) boolScapeChar = false;
             }
         }
         
-        if (strTempData.length() > 0)
-            vecData.push_back(strTempData);
+        if (chLookup != 0)
+        {
+            NOTRACE << "LATE ADDING: [" << strItem << "]" << endl;
+            vecData.push_back(strItem);
+        }
+        
+        NOTRACE << "FINAL -> chLookup: [" << chLookup << "], boolLookup: (" << boolLookup << "), boolScapeChar:(" << boolScapeChar << ")" << endl;
+        NOTRACE << " >>>> Original: [" << strOriData << "]" << endl;
+        NOTRACE << " >>>> strItem:  [" << strItem << "]" << endl << endl;
     }
     
+
     return vecData;
 }
 

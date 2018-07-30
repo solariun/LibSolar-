@@ -47,13 +47,14 @@ void signalChieldHandler (int nSignal)
     int nPid;
     int nStatusLoc;
     struct rusage rUsage;
+    TRACE << "SIGCHILD --------------------------" << endl;
     
     while ((nPid = wait3(&nStatusLoc, WNOHANG, &rUsage)) > 0)
     {
-        TRACE << "Pid:[" << nPid << "], ";
+        TRACE << "-> Pid:[" << nPid << "]" << endl;
     }
     
-    TRACE << "DONE." << endl;
+    TRACE  << "DONE." << endl;
 }
 
 constexpr int getPipeReadFD(int (&nFD)[2])
@@ -68,7 +69,10 @@ constexpr int getPipeWriteFD(int (&nFD)[2])
 
 const char** getExecArgvs(const string& strExec)
 {
-    vector<string> vecFields = Util::getFields(strExec, " '\"");
+    vector<string> vecFields;
+    
+    Util::getFields(strExec, " '\"", vecFields);
+    
     char **ppstrArgv = nullptr;
     
     if (vecFields.size() > 0)
@@ -96,6 +100,10 @@ const char** getExecArgvs(const string& strExec)
 
 
 SystemExecException::SystemExecException (std::string strMessage, uint nErrorID) : Exception ("BidirectExec", strMessage, nErrorID)
+{}
+
+
+SystemExec::SystemExec() : iostreamRead(&strbufRead)
 {
     if (boolSignalHandler == false)
     {
@@ -103,12 +111,7 @@ SystemExecException::SystemExecException (std::string strMessage, uint nErrorID)
         
         signal (SIGCHLD, signalChieldHandler);
     }
-    
 }
-
-
-SystemExec::SystemExec() : iostreamRead(&strbufRead)
-{}
 
 
 void SystemExec::spaw(const std::string strExecute)
@@ -126,8 +129,6 @@ void SystemExec::spaw(const std::string strExecute)
    
     Verify ( (nPid = forkpty (&master, NULL, NULL, NULL)) >= 0, "No Fork process created." + std::strerror(errno), BDEXEC_PROCESS_NOT_FOKED, SystemExecException);
 
-    //Verify ( (nPid = fork()) >= 0, "No Fork process created." + std::strerror(errno), BDEXEC_PROCESS_NOT_FOKED, SystemExecException);
-
     TRACE << "PID: " << nPid << endl;
     
     if ( nPid == 0)
@@ -139,35 +140,6 @@ void SystemExec::spaw(const std::string strExecute)
         tcgetattr(master, &tios);
         tios.c_lflag &= ~(ECHO | ECHONL);
         tcsetattr(master, TCSAFLUSH, &tios);
-     
-        /*
-        //process Child initializations...
-        TRACE << "Starting redircting PIDs" << endl;
-        
-        Verify (dup2(getPipeWriteFD(naReadPipe), fileno(stdout)) >= 0, "Child: Erro redirecting stdout to readPipe write side: [" + std::strerror(errno) + "]", errno, SystemExecException);
-
-        //Verify (dup2(getPipeWriteFD(naReadPipe), fileno(stderr)) >= 0, "Child: Erro redirecting stdout to readPipe write side: [" + std::strerror(errno) + "]", errno, SystemExecException);
-
-        Verify (dup2(getPipeReadFD(naWritePipe), fileno(stdin)) >= 0, "Child: Erro redirecting stdin to writePipe read side: [" + std::strerror(errno) + "]", errno, SystemExecException);
-        
-        //since stdin and out has been
-        //redirected, the remaining
-        //must be deleted...
-        close (naReadPipe[0]);
-        close (naReadPipe[1]);
-        close (naWritePipe[0]);
-        close (naWritePipe[1]);
-
-        TRACE << "Finished redirecting stdin and stdout" << endl;
-         */
-        
-        /*
-         * Since this will be replaced by
-         * the new pid, no delete will be
-         * needed, this will be done
-         * automatically by the Kernel.
-         */
-        
         
         const char** ppszArgv = getExecArgvs(strExecute);
         
@@ -182,7 +154,6 @@ void SystemExec::spaw(const std::string strExecute)
     else if (nPid > 0)
     {
         //process Paratent procedures to read process intercomm
-        
         //fcntl(master, F_SETFL, fcntl(master, F_GETFL, 0) | O_NONBLOCK);
 
         nReadChild  = master; //getPipeReadFD(naReadPipe);
@@ -196,9 +167,8 @@ void SystemExec::spaw(const std::string strExecute)
         close (getPipeWriteFD(naReadPipe));
         close (getPipeReadFD(naWritePipe));
     }
-    
-    
 }
+
 
 SystemExec::~SystemExec()
 {
@@ -206,7 +176,9 @@ SystemExec::~SystemExec()
     {
         delete fdsRead;
     }
-    //TODO - cleaning ups and process kill in case of execution still.
+    
+    if (isExecuting())
+        kill();
 }
 
 

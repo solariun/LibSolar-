@@ -60,7 +60,7 @@ bool getDebugState();
 
 namespace Util
 {
-    bool isBetween  (char chChar, const char* pszCharList, int32_t nMaxCharList);
+    bool isBetween  (char chChar, const char* pszCharList, ssize_t nMaxCharList);
 
     long getFileSize(std::string filename);
 
@@ -84,8 +84,6 @@ namespace Util
     
     const char* ToLower (char* strData, uint nDataLen);
 
-    uint getCSVlikeParser (const std::string& strData, const char* pszToken, uint nTokenSize, std::vector<std::string>& listContainer);
-
     const string getLogLikeTimeStamp ();
     
     const string getStandardErrorHeader (const char* pszClass, int nLine, const char* pszFunction);
@@ -107,7 +105,7 @@ namespace Util
      *  WARNING - it relays on copy constructor, which means it
      *        has innerent overhead.
      */
-    const vector<std::string> getFields (const std::string& strData, const std::string strTokens);
+    const vector<std::string>& getFields (const std::string& strData, const std::string strTokens, vector<std::string>& vecData,  bool boolAutoRTrim = false);
     
     void PrintStandardTypeSizes();
     

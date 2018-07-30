@@ -104,6 +104,7 @@ protected:
 
     
 private:
+    //TODO: add and initializition from stringstream. 
     
     void parseINI (string strPath="", uint32_t nDepth=0);
     
