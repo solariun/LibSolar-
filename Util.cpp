@@ -30,6 +30,13 @@
  */
 
 
+#ifndef _DEBUG
+static bool _nDebug = false;
+#else
+static bool _nDebug = true;
+#endif
+
+
 #include "Util.hpp"
 #include <stdio.h>
 #include <unistd.h>
@@ -44,11 +51,6 @@
 #include <ctime>
 
 
-#ifndef _DEBUG
-static bool _nDebug = false;
-#else
-static bool _nDebug = true;
-#endif
 
 
 void setDebug(bool nState) {_nDebug = nState;}
@@ -209,6 +211,30 @@ void  Util::PrintDataToDebug (uint8_t* szSectionData, long int nDataLen)
 }
 
 
+
+/*
+ *  getFilds* funcitons are destinated to work in mult-spepareted like
+ *  CSV or command like fasion, up to the way it will be used.
+ *
+ *  How it works:
+ *      Token is formed by an token char followed by Delimiters if needed
+ *      so, ";'\"" in sthis static string the token is ";" and the
+ *      Delimiters " e ', so A;"A B C";'123 123'"2340234"sdf;E;";;;;;;\""
+ *
+ *      for this the result vectori would bring
+ *  it would have
+ *  [1] A
+ *  [2] A B C
+ *  [3] 123 1232340234sdf
+ *  [4] E
+ *  [5] ;;;;;;"
+ *
+ *  Note that scape is also permited and will interpret \n \r and \t, all the
+ *  will be set independetly if it is a Delimiter or Token, it will be overloaded.
+ *
+ *  if Token is ' '(space) it will automaticaly perform ltrim while looking for a char
+ *  or Delimiter if, ONLY IF, --> boolAutoTrim <-- is true;
+ */
 
 const vector<std::string>& Util:: getFields (const std::string& strOriData, const std::string strTokens, vector<std::string>& vecData,  bool boolAutoRTrim)
 {

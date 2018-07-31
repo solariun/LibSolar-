@@ -10,6 +10,8 @@
 		6729C966210546B6002FE797 /* fdstream.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 6729C965210546B6002FE797 /* fdstream.hpp */; };
 		6729C969210562DD002FE797 /* SystemExec.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 6729C967210562DD002FE797 /* SystemExec.hpp */; };
 		6729C96A210562DD002FE797 /* SystemExec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6729C968210562DD002FE797 /* SystemExec.cpp */; };
+		6729C974210FCD35002FE797 /* SelectData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6729C972210FCD35002FE797 /* SelectData.cpp */; };
+		6729C975210FCD35002FE797 /* SelectData.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 6729C973210FCD35002FE797 /* SelectData.hpp */; };
 		6755362620FE1862004DC94A /* jpge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6755362420FE1861004DC94A /* jpge.cpp */; };
 		6755362720FE1862004DC94A /* jpge.h in Headers */ = {isa = PBXBuildFile; fileRef = 6755362520FE1862004DC94A /* jpge.h */; };
 		67607B542069322100578F21 /* Util.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 67607B502069322100578F21 /* Util.hpp */; };
@@ -28,6 +30,8 @@
 		6729C965210546B6002FE797 /* fdstream.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = fdstream.hpp; sourceTree = "<group>"; };
 		6729C967210562DD002FE797 /* SystemExec.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SystemExec.hpp; sourceTree = "<group>"; };
 		6729C968210562DD002FE797 /* SystemExec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemExec.cpp; sourceTree = "<group>"; };
+		6729C972210FCD35002FE797 /* SelectData.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SelectData.cpp; sourceTree = "<group>"; };
+		6729C973210FCD35002FE797 /* SelectData.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SelectData.hpp; sourceTree = "<group>"; };
 		6755362420FE1861004DC94A /* jpge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jpge.cpp; sourceTree = "<group>"; };
 		6755362520FE1862004DC94A /* jpge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jpge.h; sourceTree = "<group>"; };
 		67607B492069310C00578F21 /* libLibSolar++.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libLibSolar++.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -59,6 +63,8 @@
 		67607B402069310C00578F21 = {
 			isa = PBXGroup;
 			children = (
+				6729C972210FCD35002FE797 /* SelectData.cpp */,
+				6729C973210FCD35002FE797 /* SelectData.hpp */,
 				6729C968210562DD002FE797 /* SystemExec.cpp */,
 				6729C967210562DD002FE797 /* SystemExec.hpp */,
 				6729C965210546B6002FE797 /* fdstream.hpp */,
@@ -99,6 +105,7 @@
 				67ECD08120EC01A10009FE0F /* graphic.hpp in Headers */,
 				67ECD07D20EC01A10009FE0F /* lzh.hpp in Headers */,
 				6755362720FE1862004DC94A /* jpge.h in Headers */,
+				6729C975210FCD35002FE797 /* SelectData.hpp in Headers */,
 				6775E4AA20D1E46200A8C1B1 /* Exception.hpp in Headers */,
 				6729C966210546B6002FE797 /* fdstream.hpp in Headers */,
 				6729C969210562DD002FE797 /* SystemExec.hpp in Headers */,
@@ -164,6 +171,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				67ECD07F20EC01A10009FE0F /* lzh.cpp in Sources */,
+				6729C974210FCD35002FE797 /* SelectData.cpp in Sources */,
 				67607B562069322100578F21 /* Util.cpp in Sources */,
 				6729C96A210562DD002FE797 /* SystemExec.cpp in Sources */,
 				6775E4AB20D1E46200A8C1B1 /* Exception.cpp in Sources */,

@@ -94,16 +94,24 @@ namespace Util
     /*
      *  getFilds* funcitons are destinated to work in mult-spepareted like
      *  command line but variable...
-     *  like tokens  ['" ] -> asdf sdfg "aad ad ad ad " 'sdfds sd' 'adf"adf"d'
-     *  it would have
-     *  [1] asdf
-     *  [2] sdfg
-     *  [3] aad ad ad ad | -> including last space
-     *  [4] sdfds sd
-     *  [5] adf"adf"d
+     *  How it works:
+     *      Token is formed by an token char followed by Delimiters if needed
+     *      so, ";'\"" in sthis static string the token is ";" and the
+     *      Delimiters " e ', so A;"A B C";'123 123'"2340234"sdf;E;";;;;;;\""
      *
-     *  WARNING - it relays on copy constructor, which means it
-     *        has innerent overhead.
+     *      for this the result vectori would bring
+     *  it would have
+     *  [1] A
+     *  [2] A B C
+     *  [3] 123 1232340234sdf
+     *  [4] E
+     *  [5] ;;;;;;"
+     *
+     *  Note that scape is also permited and will interpret \n \r and \t, all the
+     *  will be set independetly if it is a Delimiter or Token, it will be overloaded.
+     *
+     *  if Token is ' '(space) it will automaticaly perform ltrim while looking for a char
+     *  or Delimiter if, ONLY IF, --> boolAutoTrim <-- is true;
      */
     const vector<std::string>& getFields (const std::string& strData, const std::string strTokens, vector<std::string>& vecData,  bool boolAutoRTrim = false);
     
