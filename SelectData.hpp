@@ -34,6 +34,6 @@ private:
 public:
     
     
-}
+};
 
 #endif /* SelectData_hpp */
